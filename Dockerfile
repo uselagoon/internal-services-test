@@ -8,8 +8,8 @@ RUN go get github.com/joho/godotenv
 
 RUN go build && chmod +x ./go-dbaas
 
-ENV MARIADB_PASSWORD=api \
-MARIADB_USER=api \
+ENV MARIADB_PASSWORD=test \
+MARIADB_USER=test \
 MARIADB_DATABASE=infrastructure \
 POSTGRES_USER=pqgotest \
 POSTGRES_PASSWORD=pqgotest \
