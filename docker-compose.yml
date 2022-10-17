@@ -6,21 +6,30 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - '8080:8080'
     depends_on:
       - mariadb
+      - postgres
     container_name: go-web
-    environment:
-      - 'DB_PORT=3305'
-      - 'DB_HOST=database'
+    # environment:
+    #   - 'DB_PORT=3305'
+    #   - 'DB_HOST=database'
       
   mariadb:
     image: mariadb:10.4
     ports:
-      - 3305:3305
-    volumes:
-      - ~/apps/mariadb:/var/lib/mysql
+      - '3305:3305'
     environment:
       - MARIADB_PASSWORD=api
       - MARIADB_USER=api
       - MARIADB_DATABASE=infrastructure
+      - MARIADB_ROOT_PASSWORD=api
+
+  postgres:
+    image: postgres:14.1-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=pqgotest
+      - POSTGRES_PASSWORD=pqgotest
+      - POSTGRES_DB=infrastructure
