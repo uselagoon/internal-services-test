@@ -5,31 +5,36 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    labels:
+      lagoon.type: basic
     ports:
-      - '8080:8080'
+      - '3000:3000'
     depends_on:
       - mariadb
       - postgres
     container_name: go-web
-    # environment:
-    #   - 'DB_PORT=3305'
-    #   - 'DB_HOST=database'
+    environment:
+      - LAGOON_TEST_VAR=test
       
   mariadb:
-    image: mariadb:10.4
+    image: uselagoon/mariadb-10.6
+    labels:
+      lagoon.type: mariadb
     ports:
-      - '3305:3305'
+      - '3306'
     environment:
-      - MARIADB_PASSWORD=test
-      - MARIADB_USER=test
-      - MARIADB_DATABASE=infrastructure
-      - MARIADB_ROOT_PASSWORD=test
+      - MARIADB_PASSWORD=lagoon
+      - MARIADB_USER=lagoon
+      - MARIADB_DATABASE=lagoon
+      - MARIADB_ROOT_PASSWORD=Lag00n
 
   postgres:
-    image: postgres:14.1-alpine
+    image: uselagoon/postgres-14
+    labels:
+      lagoon.type: postgres
     ports:
-      - '5432:5432'
+      - '5432'
     environment:
-      - POSTGRES_USER=pqgotest
-      - POSTGRES_PASSWORD=pqgotest
-      - POSTGRES_DB=infrastructure
+      - POSTGRES_USER=lagoon
+      - POSTGRES_PASSWORD=lagoon
+      - POSTGRES_DB=lagoon
