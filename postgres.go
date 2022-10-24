@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	postgresUser          = os.Getenv("POSTGRES_USER")
+	postgresUser          = os.Getenv("POSTGRES_USERNAME")
 	postgresPassword      = os.Getenv("POSTGRES_PASSWORD")
 	postgresDB            = os.Getenv("POSTGRES_DATABASE")
 	postgresHost          = os.Getenv("POSTGRES_HOST")

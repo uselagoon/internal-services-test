@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	mariaUser          = os.Getenv("MARIADB_USER")
+	mariaUser          = os.Getenv("MARIADB_USERNAME")
 	mariaPassword      = os.Getenv("MARIADB_PASSWORD")
 	mariaDB            = os.Getenv("MARIADB_DATABASE")
 	mariaHost          = os.Getenv("MARIADB_HOST")

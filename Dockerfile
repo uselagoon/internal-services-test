@@ -9,10 +9,10 @@ RUN go get github.com/joho/godotenv
 RUN go build && chmod +x ./go-dbaas
 
 ENV MARIADB_PASSWORD=lagoon \
-MARIADB_USER=lagoon \
+MARIADB_USERNAME=lagoon \
 MARIADB_DATABASE=lagoon \
 MARIADB_HOST=mariadb \
-POSTGRES_USER=lagoon \
+POSTGRES_USERNAME=lagoon \
 POSTGRES_PASSWORD=lagoon \
 POSTGRES_DATABASE=lagoon \
 POSTGRES_HOST=postgres
