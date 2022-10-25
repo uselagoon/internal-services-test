@@ -33,7 +33,7 @@ func postgresHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func postgresDBConnector() map[string]string {
-	db, err := sql.Open(postgresHost, postgresConnectionStr)
+	db, err := sql.Open("postgres", postgresConnectionStr)
 	if err != nil {
 		log.Print(err)
 	}

@@ -18,7 +18,6 @@ var (
 	mariaDB            = os.Getenv("MARIADB_DATABASE")
 	mariaHost          = os.Getenv("MARIADB_HOST")
 	mariaPort          = 3306
-	mariaDriver        = "mysql"
 	mariaConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", mariaUser, mariaPassword, mariaHost, mariaPort, mariaDB)
 )
 
@@ -32,7 +31,7 @@ func mariaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func mariaDBConnector() map[string]string {
-	db, err := sql.Open(mariaDriver, mariaConnectionStr)
+	db, err := sql.Open("mysql", mariaConnectionStr)
 	if err != nil {
 		log.Print(err)
 	}

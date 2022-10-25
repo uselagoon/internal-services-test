@@ -1,14 +1,13 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 type funcType func() map[string]string
-
-var funcToCall []funcType
 
 func main() {
 
@@ -23,13 +22,17 @@ func main() {
 }
 
 func handleReq(w http.ResponseWriter, r *http.Request) {
+	var funcToCall []funcType
 	funcToCall = append(funcToCall, mariaDBConnector, postgresDBConnector)
 	for _, conFunc := range funcToCall {
-		resp := conFunc()
-		jsonResp, err := json.Marshal(resp)
-		if err != nil {
-			log.Fatalf("Error happened in JSON marshal. Err: %s", err)
-		}
-		w.Write(jsonResp)
+		fmt.Fprintf(w, createKeyValuePairs(conFunc()))
 	}
+}
+
+func createKeyValuePairs(f map[string]string) string {
+	b := new(bytes.Buffer)
+	for key, value := range f {
+		fmt.Fprintf(b, "\"%s=%s\"\n", key, value)
+	}
+	return b.String()
 }
