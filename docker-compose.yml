@@ -22,11 +22,6 @@ services:
       lagoon.type: mariadb
     ports:
       - '3306'
-    # environment:
-    #   - MARIADB_PASSWORD=lagoon
-    #   - MARIADB_USERNAME=lagoon
-    #   - MARIADB_DATABASE=lagoon
-    #   - MARIADB_ROOT_PASSWORD=Lag00n
 
   postgres:
     image: uselagoon/postgres-14
@@ -34,7 +29,12 @@ services:
       lagoon.type: postgres
     ports:
       - '5432'
-    # environment:
-    #   - POSTGRES_USERNAME=lagoon
-    #   - POSTGRES_PASSWORD=lagoon
-    #   - POSTGRES_DB=lagoon
+
+  solr:
+    image: uselagoon/solr-8
+    ports:
+     - "8983"
+    command:
+      - solr-precreate
+      - gettingstarted
+

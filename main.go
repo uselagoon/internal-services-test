@@ -18,6 +18,8 @@ func main() {
 	http.Handle("/mariadb", mariaHandler)
 	http.Handle("/postgres", postgresHandler)
 
+	solrConnector()
+
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }
 
