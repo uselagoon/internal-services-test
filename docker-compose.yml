@@ -35,6 +35,8 @@ services:
 
   solr:
     image: uselagoon/solr-8
+    labels:
+      lagoon.type: solr
     ports:
      - "8983"
     volumes:
