@@ -1,5 +1,8 @@
 version: '2'
 
+volumes:
+  data:
+
 services:
   web:
     build:
@@ -34,7 +37,10 @@ services:
     image: uselagoon/solr-8
     ports:
      - "8983"
+    volumes:
+      - data:/var/solr
     command:
       - solr-precreate
-      - gettingstarted
+      - core
+
 

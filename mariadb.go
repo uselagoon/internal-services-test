@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -22,12 +21,7 @@ var (
 )
 
 func mariaHandler(w http.ResponseWriter, r *http.Request) {
-	resp := mariaDBConnector()
-	jsonResp, err := json.Marshal(resp)
-	if err != nil {
-		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
-	}
-	w.Write(jsonResp)
+	fmt.Fprintf(w, createKeyValuePairs(mariaDBConnector()))
 }
 
 func mariaDBConnector() map[string]string {

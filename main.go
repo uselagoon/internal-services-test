@@ -14,11 +14,11 @@ func main() {
 	handler := http.HandlerFunc(handleReq)
 	mariaHandler := http.HandlerFunc(mariaHandler)
 	postgresHandler := http.HandlerFunc(postgresHandler)
+	solrHandler := http.HandlerFunc(solrHandler)
 	http.Handle("/", handler)
 	http.Handle("/mariadb", mariaHandler)
 	http.Handle("/postgres", postgresHandler)
-
-	solrConnector()
+	http.Handle("/solr", solrHandler)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }

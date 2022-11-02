@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,12 +23,8 @@ var (
 )
 
 func postgresHandler(w http.ResponseWriter, r *http.Request) {
-	resp := postgresDBConnector()
-	jsonResp, err := json.Marshal(resp)
-	if err != nil {
-		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
-	}
-	w.Write(jsonResp)
+	fmt.Fprintf(w, createKeyValuePairs(postgresDBConnector()))
+
 }
 
 func postgresDBConnector() map[string]string {
