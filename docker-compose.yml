@@ -18,6 +18,7 @@ services:
     container_name: go-web
     environment:
       - LAGOON_TEST_VAR=test
+      - LAGOON_GIT_SHA=grgsf
       
   mariadb:
     image: uselagoon/mariadb-10.6
@@ -43,6 +44,6 @@ services:
       - data:/var/solr
     command:
       - solr-precreate
-      - core
+      - mycore
 
 

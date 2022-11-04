@@ -25,7 +25,6 @@ func main() {
 
 func handleReq(w http.ResponseWriter, r *http.Request) {
 	var funcToCall []funcType
-	funcToCall = append(funcToCall, mariaDBConnector, postgresDBConnector)
 	for _, conFunc := range funcToCall {
 		fmt.Fprintf(w, createKeyValuePairs(conFunc()))
 	}

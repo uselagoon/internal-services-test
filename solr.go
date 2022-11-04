@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/vanng822/go-solr/solr"
@@ -20,38 +21,38 @@ func solrHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, convertSolrDoc(solrConnector()))
 }
 
-func convertSolrDoc(f []solr.Document) string {
+func convertSolrDoc(d []solr.Document) string {
+	solrDoctoString := fmt.Sprintf("%s", d)
+	results := strings.Fields(solrDoctoString)
+	var replaced []string
+	r := regexp.MustCompile(`[map\[\]']+`)
+	for _, str := range results {
+		replaced = append(replaced, r.ReplaceAllString(str, ""))
+	}
 	b := new(bytes.Buffer)
-	for _, doc := range f {
+	for _, doc := range replaced {
 		fmt.Fprintf(b, "\"%s\"\n", doc)
 	}
-	v := b.String()
-	v1 := strings.ReplaceAll(v, "[", "")
-	v2 := strings.ReplaceAll(v1, "]", "")
-	v3 := strings.ReplaceAll(v2, "map", "")
-	return v3
+	return b.String()
 }
 
 func solrConnector() []solr.Document {
-	si, err := solr.NewSolrInterface(solrConnectionStr, "core")
+	si, err := solr.NewSolrInterface(solrConnectionStr, "mycore")
 	if err != nil {
 		log.Print(err)
-	} else {
-		log.Print(solrConnectionStr)
 	}
 	si.DeleteAll()
 	d := solr.Document{}
 	for _, e := range os.Environ() {
-
 		pair := strings.SplitN(e, "=", 2)
 		d.Set(pair[0], pair[1])
 		if err != nil {
 			panic(err.Error())
 		}
 	}
-	arrayD := []solr.Document{}
-	arrayD = append(arrayD, d)
-	si.Add(arrayD, 1, nil)
+	documents := []solr.Document{}
+	documents = append(documents, d)
+	si.Add(documents, 1, nil)
 	si.Commit()
 	query := solr.NewQuery()
 	query.Q("*:*")
