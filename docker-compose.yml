@@ -18,7 +18,8 @@ services:
     container_name: go-web
     environment:
       - LAGOON_TEST_VAR=test
-      - LAGOON_GIT_SHA=grgsf
+      - LAGOON_GIT_SHA=SHA256
+      - LAGOON_ENV=Dev
       
   mariadb:
     image: uselagoon/mariadb-10.6
@@ -46,4 +47,9 @@ services:
       - solr-precreate
       - mycore
 
-
+  redis:
+    image: uselagoon/redis-6
+    labels:
+      lagoon.type: redis
+    ports:
+      - '6379'

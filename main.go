@@ -15,10 +15,12 @@ func main() {
 	mariaHandler := http.HandlerFunc(mariaHandler)
 	postgresHandler := http.HandlerFunc(postgresHandler)
 	solrHandler := http.HandlerFunc(solrHandler)
+	redisHandler := http.HandlerFunc(redisHandler)
 	http.Handle("/", handler)
 	http.Handle("/mariadb", mariaHandler)
 	http.Handle("/postgres", postgresHandler)
 	http.Handle("/solr", solrHandler)
+	http.Handle("/redis", redisHandler)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }

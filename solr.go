@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	service           = os.Getenv("SOLR_HOST")
-	solrConnectionStr = fmt.Sprintf("http://%s:8983/solr", service)
+	solrService       = os.Getenv("SOLR_HOST")
+	solrConnectionStr = fmt.Sprintf("http://%s:8983/solr", solrService)
 )
 
 func solrHandler(w http.ResponseWriter, r *http.Request) {
