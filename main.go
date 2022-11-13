@@ -16,11 +16,15 @@ func main() {
 	postgresHandler := http.HandlerFunc(postgresHandler)
 	solrHandler := http.HandlerFunc(solrHandler)
 	redisHandler := http.HandlerFunc(redisHandler)
+	opensearchHandler := http.HandlerFunc(opensearchHandler)
 	http.Handle("/", handler)
 	http.Handle("/mariadb", mariaHandler)
 	http.Handle("/postgres", postgresHandler)
 	http.Handle("/solr", solrHandler)
 	http.Handle("/redis", redisHandler)
+	http.Handle("/opensearch", opensearchHandler)
+
+	opensearchConnector()
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }

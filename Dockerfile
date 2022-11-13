@@ -17,7 +17,8 @@ POSTGRES_PASSWORD=lagoon \
 POSTGRES_DATABASE=lagoon \
 POSTGRES_HOST=postgres \
 SOLR_HOST=solr \
-REDIS_HOST=redis
+REDIS_HOST=redis \
+OPENSEARCH_HOST=opensearch-node 
 
 EXPOSE 3000
 
