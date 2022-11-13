@@ -74,7 +74,7 @@ services:
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
     labels:
-      lagoon.type: basic
+      lagoon.type: elasticsearch
     ports:
       - '9200'
     networks:
