@@ -50,7 +50,6 @@ func postgresDBConnector() map[string]string {
 		}
 	}
 
-	// pgQuery := "POSTGRES%"
 	gitSHA := "LAGOON_%"
 	rows, err := db.Query(`SELECT * FROM env where env_key LIKE $1`, gitSHA)
 	if err != nil {

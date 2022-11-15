@@ -25,6 +25,25 @@ func mongoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, mongoConnector())
 }
 
+func cleanMongoOutput(docs []primitive.M) string {
+	valStr := fmt.Sprint(docs)
+	r := regexp.MustCompile(`(?:LAGOON_\w*)\s\w*:(?:\w*)`)
+	matches := r.FindAllString(valStr, -1)
+	var mongoResults []string
+	for _, str := range matches {
+		mongoVals := strings.ReplaceAll(str, "value:", "")
+		mongoResults = append(mongoResults, mongoVals)
+	}
+
+	b := new(bytes.Buffer)
+	for _, value := range mongoResults {
+		v := strings.SplitN(value, " ", 2)
+		fmt.Fprintf(b, "\"%s=%s\"\n", v[0], v[1])
+	}
+	mongoOutput := mongodb_host + "\n" + b.String()
+	return mongoOutput
+}
+
 func mongoConnector() string {
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
 	if err != nil {
@@ -32,6 +51,12 @@ func mongoConnector() string {
 	}
 
 	envCollection := client.Database("testing").Collection("env-vars")
+
+	deleteFilter := bson.D{{}}
+	_, err = envCollection.DeleteMany(context.TODO(), deleteFilter)
+	if err != nil {
+		panic(err)
+	}
 
 	environmentVariables := []interface{}{}
 
@@ -55,21 +80,6 @@ func mongoConnector() string {
 		panic(err)
 	}
 
-	valStr := fmt.Sprint(docs)
-	r := regexp.MustCompile(`(?:LAGOON_\w*)\s\w*:(?:\w*)`)
-	matches := r.FindAllString(valStr, -1)
-	var mongoResults []string
-	for _, str := range matches {
-		mongoVals := strings.ReplaceAll(str, "value:", "")
-		mongoResults = append(mongoResults, mongoVals)
-	}
-
-	b := new(bytes.Buffer)
-	for _, value := range mongoResults {
-		v := strings.SplitN(value, " ", 2)
-		fmt.Fprintf(b, "\"%s=%s\"\n", v[0], v[1])
-	}
-
-	mongohOutput := mongodb_host + "\n" + b.String()
-	return mongohOutput
+	mongoOutput := cleanMongoOutput(docs)
+	return mongoOutput
 }

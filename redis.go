@@ -31,8 +31,8 @@ func cleanRedisOutput(r *redis.StringCmd) string {
 func redisConnector() string {
 	client := redis.NewClient(&redis.Options{
 		Addr:     redisConnectionStr,
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Password: "",
+		DB:       0,
 	})
 
 	for _, e := range os.Environ() {
