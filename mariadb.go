@@ -21,7 +21,7 @@ var (
 )
 
 func mariaHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, createKeyValuePairs(mariaDBConnector()))
+	fmt.Fprintf(w, createKeyValuePairs(mariaDBConnector(), mariaHost))
 }
 
 func mariaDBConnector() map[string]string {
@@ -41,16 +41,15 @@ func mariaDBConnector() map[string]string {
 	query := "INSERT INTO env(env_key, env_value) VALUES (?, ?)"
 
 	for _, e := range os.Environ() {
-
 		pair := strings.SplitN(e, "=", 2)
 		_, err := db.Exec(query, pair[0], pair[1])
 		if err != nil {
 			panic(err.Error())
 		}
 	}
-	// mdbQuery := "MARIADB%"
-	gitSHA := "LAGOON_%"
-	rows, err := db.Query(`SELECT * FROM env where env_key LIKE ?`, gitSHA)
+
+	q := "LAGOON_%"
+	rows, err := db.Query(`SELECT * FROM env where env_key LIKE ?`, q)
 	if err != nil {
 		log.Print(err)
 	}

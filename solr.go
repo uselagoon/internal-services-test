@@ -33,7 +33,8 @@ func convertSolrDoc(d []solr.Document) string {
 	for _, doc := range replaced {
 		fmt.Fprintf(b, "\"%s\"\n", doc)
 	}
-	return b.String()
+	solrOutput := solrService + "\n" + b.String()
+	return solrOutput
 }
 
 func solrConnector() []solr.Document {

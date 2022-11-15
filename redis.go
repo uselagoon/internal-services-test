@@ -13,8 +13,8 @@ import (
 
 var (
 	ctx                = context.Background()
-	redisService       = os.Getenv("REDIS_HOST")
-	redisConnectionStr = fmt.Sprintf("%s:6379", redisService)
+	redisHost          = os.Getenv("REDIS_HOST")
+	redisConnectionStr = fmt.Sprintf("%s:6379", redisHost)
 )
 
 func redisHandler(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +58,6 @@ func redisConnector() string {
 		fmt.Fprintf(b, "\"%s\"\n", value)
 	}
 
-	redisData := b.String()
+	redisData := redisHost + "\n" + b.String()
 	return redisData
 }

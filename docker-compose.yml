@@ -56,7 +56,7 @@ services:
       - '6379'
 
   opensearch-node:
-    image: testlagoon/opensearch-2:latest
+    image: uselagoon/opensearch-2:latest
     environment:
     - cluster.name=opensearch-cluster
     - node.name=opensearch-node
@@ -74,8 +74,13 @@ services:
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
     labels:
-      lagoon.type: elasticsearch
+      lagoon.type: opensearch
     ports:
       - '9200'
-    networks:
-      - default
+
+  mongodb:
+    image: uselagoon/mongo:latest
+    labels:
+      lagoon.type: mongo
+    ports:
+      - '27017'

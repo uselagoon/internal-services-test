@@ -51,8 +51,8 @@ func cleanOpensearchOutput(sr *opensearchapi.Response) string {
 	for _, value := range matches {
 		fmt.Fprintf(b, "\"%s\"\n", value)
 	}
-
-	return b.String()
+	opensearchOutput := opensearchHost + "\n" + b.String()
+	return opensearchOutput
 }
 
 func createOpensearchIndexDocument(client *opensearch.Client) {
