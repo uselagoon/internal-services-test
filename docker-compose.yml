@@ -74,7 +74,7 @@ services:
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
     labels:
-      lagoon.type: opensearch-persistent
+      lagoon.type: opensearch
     ports:
       - '9200'
 
