@@ -18,8 +18,11 @@ POSTGRES_DATABASE=lagoon \
 POSTGRES_HOST=postgres \
 SOLR_HOST=solr \
 REDIS_HOST=redis \
-OPENSEARCH_HOST=opensearch-node \
-MONGODB_HOST=mongodb 
+OPENSEARCH_HOST=opensearch \
+MONGO_HOST=mongo \
+MONGO_USERNAME=lagoon \
+MONGO_PASSWORD=lagoon \
+MONGO_DATABASE=lagoon
 
 EXPOSE 3000
 
