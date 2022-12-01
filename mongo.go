@@ -21,7 +21,9 @@ var (
 	mongoHost     = os.Getenv("MONGO_HOST")
 	mongoDB       = os.Getenv("MONGO_DATABASE")
 	mongoPort     = 27017
-	mongoURI      = fmt.Sprintf("mongodb://%s:%s@%s:%d/%s", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDB)
+	mongoUserURI  = fmt.Sprintf("mongodb://%s:%s@%s:%d/%s", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDB)
+	mongoLocalURI = fmt.Sprintf("mongodb://%s:%d", mongoHost, mongoPort)
+	mongoURI      string
 )
 
 func mongoHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,6 +51,12 @@ func cleanMongoOutput(docs []primitive.M) string {
 }
 
 func mongoConnector() string {
+	if mongoUser != "" {
+		mongoURI = mongoUserURI
+	} else {
+		mongoURI = mongoLocalURI
+	}
+	fmt.Println(mongoURI)
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		panic(err)

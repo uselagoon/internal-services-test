@@ -20,9 +20,7 @@ SOLR_HOST=solr \
 REDIS_HOST=redis \
 OPENSEARCH_HOST=opensearch \
 MONGO_HOST=mongo \
-MONGO_USERNAME=lagoon \
-MONGO_PASSWORD=lagoon \
-MONGO_DATABASE=lagoon
+MONGO_DATABASE=lagoon 
 
 EXPOSE 3000
 
