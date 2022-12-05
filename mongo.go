@@ -45,7 +45,7 @@ func cleanMongoOutput(docs []primitive.M) string {
 		v := strings.SplitN(value, " ", 2)
 		fmt.Fprintf(b, "\"%s=%s\"\n", v[0], v[1])
 	}
-	host := fmt.Sprintf(`"Service_Host=%s"`, mongoHost)
+	host := fmt.Sprintf(`"SERVICE_HOST=%s"`, mongoHost)
 	mongoOutput := host + "\n" + b.String()
 	return mongoOutput
 }

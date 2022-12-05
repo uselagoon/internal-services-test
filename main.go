@@ -42,7 +42,7 @@ func dbConnectorPairs(m map[string]string, connectorHost string) string {
 	for key, value := range m {
 		fmt.Fprintf(b, "\"%s=%s\"\n", key, value)
 	}
-	host := fmt.Sprintf(`"Service_Host=%s"`, connectorHost)
+	host := fmt.Sprintf(`"SERVICE_HOST=%s"`, connectorHost)
 	connectorOutput := host + "\n" + b.String()
 	return connectorOutput
 }

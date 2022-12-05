@@ -53,7 +53,7 @@ func redisConnector() string {
 	}
 
 	keyVals := connectorKeyValues(values)
-	host := fmt.Sprintf(`"Service_Host=%s"`, redisHost)
+	host := fmt.Sprintf(`"SERVICE_HOST=%s"`, redisHost)
 	redisData := host + "\n" + keyVals
 	return redisData
 }
