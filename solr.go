@@ -30,7 +30,7 @@ func convertSolrDoc(d []solr.Document) string {
 	}
 	keyVals := connectorKeyValues(replaced)
 	cleanSolrString := strings.ReplaceAll(keyVals, "map", "")
-	solrHost := fmt.Sprintf(`"Service_Host=%s"`, solrService)
+	solrHost := fmt.Sprintf(`"SERVICE_HOST=%s"`, solrService)
 	solrOutput := solrHost + "\n" + cleanSolrString
 	return solrOutput
 }
