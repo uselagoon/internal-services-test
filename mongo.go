@@ -56,7 +56,6 @@ func mongoConnector() string {
 	} else {
 		mongoURI = mongoLocalURI
 	}
-	fmt.Println(mongoURI)
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		panic(err)

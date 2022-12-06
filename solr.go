@@ -26,12 +26,12 @@ func convertSolrDoc(d []solr.Document) string {
 	var replaced []string
 	r := regexp.MustCompile(`[\[\]']+`)
 	for _, str := range results {
-		replaced = append(replaced, r.ReplaceAllString(str, ""))
+		cleanSolrString := strings.ReplaceAll(str, "map", "")
+		replaced = append(replaced, r.ReplaceAllString(cleanSolrString, ""))
 	}
 	keyVals := connectorKeyValues(replaced)
-	cleanSolrString := strings.ReplaceAll(keyVals, "map", "")
 	solrHost := fmt.Sprintf(`"SERVICE_HOST=%s"`, solrService)
-	solrOutput := solrHost + "\n" + cleanSolrString
+	solrOutput := solrHost + "\n" + keyVals
 	return solrOutput
 }
 
