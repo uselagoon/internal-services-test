@@ -50,8 +50,10 @@ func dbConnectorPairs(m map[string]string, connectorHost string) string {
 func connectorKeyValues(values []string) string {
 	b := new(bytes.Buffer)
 	for _, value := range values {
-		v := strings.SplitN(value, ":", 2)
-		fmt.Fprintf(b, "\"%s=%s\"\n", v[0], v[1])
+		if value != "" {
+			v := strings.SplitN(value, ":", 2)
+			fmt.Fprintf(b, "\"%s=%s\"\n", v[0], v[1])
+		}
 	}
 	return b.String()
 }
