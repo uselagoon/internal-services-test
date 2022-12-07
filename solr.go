@@ -22,13 +22,13 @@ func solrHandler(w http.ResponseWriter, r *http.Request) {
 	solrRoute := r.URL.Path
 	switch solrRoute {
 	case "/solr":
-		fmt.Fprintf(w, convertSolrDoc(solrConnector(solrConnectionStr)))
-	case "/solr-5":
-		fmt.Fprintf(w, convertSolrDoc(solrConnector(solr7ConnectionStr)))
+		fmt.Fprintf(w, convertSolrDoc(solrConnector(solrConnectionStr), solrHost))
+	case "/solr-7":
+		fmt.Fprintf(w, convertSolrDoc(solrConnector(solr7ConnectionStr), solr7))
 	}
 }
 
-func convertSolrDoc(d []solr.Document) string {
+func convertSolrDoc(d []solr.Document, version string) string {
 	solrDoctoString := fmt.Sprintf("%s", d)
 	results := strings.Fields(solrDoctoString)
 	var replaced []string
@@ -38,7 +38,7 @@ func convertSolrDoc(d []solr.Document) string {
 		replaced = append(replaced, r.ReplaceAllString(cleanSolrString, ""))
 	}
 	keyVals := connectorKeyValues(replaced)
-	solrHost := fmt.Sprintf(`"SERVICE_HOST=%s"`, solrHost)
+	solrHost := fmt.Sprintf(`"SERVICE_HOST=%s"`, version)
 	solrOutput := solrHost + "\n" + keyVals
 	return solrOutput
 }
