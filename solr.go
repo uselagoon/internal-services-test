@@ -12,12 +12,20 @@ import (
 )
 
 var (
-	solrService       = os.Getenv("SOLR_HOST")
-	solrConnectionStr = fmt.Sprintf("http://%s:8983/solr", solrService)
+	solrHost           = os.Getenv("SOLR_HOST")
+	solr7              = "solr-7"
+	solrConnectionStr  = fmt.Sprintf("http://%s:8983/solr", solrHost)
+	solr7ConnectionStr = fmt.Sprintf("http://%s:8983/solr", solr7)
 )
 
 func solrHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, convertSolrDoc(solrConnector()))
+	solrRoute := r.URL.Path
+	switch solrRoute {
+	case "/solr":
+		fmt.Fprintf(w, convertSolrDoc(solrConnector(solrConnectionStr)))
+	case "/solr-5":
+		fmt.Fprintf(w, convertSolrDoc(solrConnector(solr7ConnectionStr)))
+	}
 }
 
 func convertSolrDoc(d []solr.Document) string {
@@ -30,13 +38,13 @@ func convertSolrDoc(d []solr.Document) string {
 	}
 	keyVals := connectorKeyValues(replaced)
 	cleanSolrString := strings.ReplaceAll(keyVals, "map", "")
-	solrHost := fmt.Sprintf(`"SERVICE_HOST=%s"`, solrService)
+	solrHost := fmt.Sprintf(`"SERVICE_HOST=%s"`, solrHost)
 	solrOutput := solrHost + "\n" + cleanSolrString
 	return solrOutput
 }
 
-func solrConnector() []solr.Document {
-	si, err := solr.NewSolrInterface(solrConnectionStr, "mycore")
+func solrConnector(connectionString string) []solr.Document {
+	si, err := solr.NewSolrInterface(connectionString, "mycore")
 	if err != nil {
 		log.Print(err)
 	}

@@ -6,27 +6,22 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 type funcType func() map[string]string
 
 func main() {
-
-	handler := http.HandlerFunc(handleReq)
-	mariadbHandler := http.HandlerFunc(mariadbHandler)
-	postgresHandler := http.HandlerFunc(postgresHandler)
-	solrHandler := http.HandlerFunc(solrHandler)
-	redisHandler := http.HandlerFunc(redisHandler)
-	opensearchHandler := http.HandlerFunc(opensearchHandler)
-	mongoHandler := http.HandlerFunc(mongoHandler)
-	http.Handle("/", handler)
-	http.Handle("/mariadb", mariadbHandler)
-	http.Handle("/postgres", postgresHandler)
-	http.Handle("/solr", solrHandler)
-	http.Handle("/redis", redisHandler)
-	http.Handle("/opensearch", opensearchHandler)
-	http.Handle("/mongo", mongoHandler)
-
+	r := mux.NewRouter()
+	r.HandleFunc("/{mariadb:mariadb|mariadb-(?:10.4|10.5)$}", mariadbHandler)
+	r.HandleFunc("/{postgres:postgres|postgres-(?:11|12|13)$}", postgresHandler)
+	r.HandleFunc("/{redis:redis|redis-5}", redisHandler)
+	r.HandleFunc("/{solr:solr|solr-7}", solrHandler)
+	r.HandleFunc("/mongo", mongoHandler)
+	r.HandleFunc("/opensearch", opensearchHandler)
+	r.HandleFunc("/", handleReq)
+	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }
 
