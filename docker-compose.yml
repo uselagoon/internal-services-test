@@ -14,44 +14,41 @@ services:
       lagoon.type: basic
     ports:
       - '3000:3000'
-    depends_on:
-      - mariadb
-      - postgres
     container_name: go-web
     environment:
       - LAGOON_TEST_VAR=test
       - LAGOON_GIT_SHA=SHA256
       - LAGOON_ENV=Prod
       
-  mariadb-10.4:
+  mariadb-10-4:
     image: uselagoon/mariadb-10.4
     labels:
-      lagoon.type: mariadb
+      lagoon.type: mariadb-single
     ports:
       - '3306'
   
-  mariadb-10.5:
+  mariadb-10-5:
     image: uselagoon/mariadb-10.5
     labels:
-      lagoon.type: mariadb
+      lagoon.type: mariadb-single
     ports:
       - '3306'
 
-  mariadb:
+  mariadb-10-6:
     image: uselagoon/mariadb-10.6
     labels:
       lagoon.type: mariadb
     ports:
       - '3306'
 
-  mongo:
+  mongo-4:
     image: uselagoon/mongo:latest
     labels:
       lagoon.type: mongo
     ports:
       - '27017'
 
-  opensearch:
+  opensearch-2:
     image: uselagoon/opensearch-2:latest
     environment:
     - cluster.name=opensearch-cluster
@@ -77,25 +74,25 @@ services:
   postgres-11:
     image: uselagoon/postgres-11
     labels:
-      lagoon.type: postgres
+      lagoon.type: postgres-single
     ports:
       - '5432'
 
   postgres-12:
     image: uselagoon/postgres-12
     labels:
-      lagoon.type: postgres
+      lagoon.type: postgres-single
     ports:
       - '5432'
 
   postgres-13:
     image: uselagoon/postgres-13
     labels:
-      lagoon.type: postgres
+      lagoon.type: postgres-single
     ports:
       - '5432'
 
-  postgres:
+  postgres-14:
     image: uselagoon/postgres-14
     labels:
       lagoon.type: postgres
@@ -109,7 +106,7 @@ services:
     ports:
       - '6379'
 
-  redis:
+  redis-6:
     image: uselagoon/redis-6
     labels:
       lagoon.type: redis
@@ -128,7 +125,7 @@ services:
       - solr-precreate
       - mycore
 
-  solr:
+  solr-8:
     image: uselagoon/solr-8
     labels:
       lagoon.type: solr

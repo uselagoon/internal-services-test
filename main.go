@@ -5,21 +5,26 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
+)
+
+var (
+	localCheck = os.Getenv("LAGOON_ENVIRONMENT")
 )
 
 type funcType func() map[string]string
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/{mariadb:mariadb|mariadb-(?:10.4|10.5)$}", mariadbHandler)
-	r.HandleFunc("/{postgres:postgres|postgres-(?:11|12|13)$}", postgresHandler)
-	r.HandleFunc("/{redis:redis|redis-5}", redisHandler)
-	r.HandleFunc("/{solr:solr|solr-7}", solrHandler)
-	r.HandleFunc("/mongo", mongoHandler)
-	r.HandleFunc("/opensearch", opensearchHandler)
+	r.HandleFunc("/{mariadb:mariadb-.*}", mariadbHandler)
+	r.HandleFunc("/{postgres:postgres-.*}", postgresHandler)
+	r.HandleFunc("/{redis:redis-.*}", redisHandler)
+	r.HandleFunc("/{solr:solr-.*}", solrHandler)
+	r.HandleFunc("/mongo-4", mongoHandler)
+	r.HandleFunc("/opensearch-2", opensearchHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":3000", nil))
@@ -51,4 +56,12 @@ func connectorKeyValues(values []string) string {
 		}
 	}
 	return b.String()
+}
+
+func cleanRoute(basePath string) (string, string) {
+	cleanRoute := strings.ReplaceAll(basePath, "/", "")
+	localRoute := strings.ReplaceAll(cleanRoute, "10.", "10-")
+	replaceHyphen := strings.ReplaceAll(localRoute, "-", "_")
+	lagoonRoute := strings.ToUpper(replaceHyphen)
+	return localRoute, lagoonRoute
 }
