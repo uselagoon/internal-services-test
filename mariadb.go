@@ -12,28 +12,22 @@ import (
 )
 
 var (
-	mariadbUser          = os.Getenv("MARIADB_USERNAME")
-	mariadbPassword      = os.Getenv("MARIADB_PASSWORD")
-	mariadb              = os.Getenv("MARIADB_DATABASE")
-	mariadbPort          = 3306
 	mariadbVersion       string
 	mariadbConnectionStr string
 )
 
 func mariadbHandler(w http.ResponseWriter, r *http.Request) {
 	mariadbPath := r.URL.Path
-	localRoute, lagoonRoute := cleanRoute(mariadbPath)
-	lagoonUsername := os.Getenv(fmt.Sprintf("%s_USERNAME", lagoonRoute))
-	lagoonPassword := os.Getenv(fmt.Sprintf("%s_PASSWORD", lagoonRoute))
-	lagoonDatabase := os.Getenv(fmt.Sprintf("%s_DATABASE", lagoonRoute))
-	lagoonPort := os.Getenv(fmt.Sprintf("%s_PORT", lagoonRoute))
-	lagoonHost := os.Getenv(fmt.Sprintf("%s_HOST", lagoonRoute))
+	localService, lagoonService := cleanRoute(mariadbPath)
+	mariadbUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
+	mariadbPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
+	mariadbHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
+	mariadbPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "3306")
+	mariadbDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
-	if localCheck != "" {
-		mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", lagoonUsername, lagoonPassword, lagoonHost, lagoonPort, lagoonDatabase)
-	} else {
-		mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", mariadbUser, mariadbPassword, localRoute, mariadbPort, mariadb)
-	}
+	mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mariadbUser, mariadbPassword, mariadbHost, mariadbPort, mariadbDatabase)
+	log.Print(fmt.Sprintf("Using %s as the connstring", mariadbConnectionStr))
+
 	fmt.Fprintf(w, dbConnectorPairs(mariadbConnector(mariadbConnectionStr), mariadbVersion))
 }
 

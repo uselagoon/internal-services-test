@@ -18,8 +18,8 @@ services:
     environment:
       - LAGOON_TEST_VAR=test
       - LAGOON_GIT_SHA=SHA256
-      - LAGOON_ENV=Prod
-      
+      - LAGOON_ENVIRONMENT_TYPE=development
+
   mariadb-10-4:
     image: uselagoon/mariadb-10.4
     labels:

@@ -17,29 +17,29 @@ import (
 )
 
 var (
-	mongoPort          = 27017
-	mongoVersion       string
 	mongoConnectionStr string
+	mongoHost 		   string
 	database           string
 )
 
 func mongoHandler(w http.ResponseWriter, r *http.Request) {
 	mongoPath := r.URL.Path
-	localRoute, lagoonRoute := cleanRoute(mongoPath)
-	mongoVersion = localRoute
-	lagoonUsername := os.Getenv(fmt.Sprintf("%s_USERNAME", lagoonRoute))
-	lagoonPassword := os.Getenv(fmt.Sprintf("%s_PASSWORD", lagoonRoute))
-	lagoonDatabase := os.Getenv(fmt.Sprintf("%s_DATABASE", lagoonRoute))
-	lagoonPort := os.Getenv(fmt.Sprintf("%s_PORT", lagoonRoute))
-	lagoonHost := os.Getenv(fmt.Sprintf("%s_HOST", lagoonRoute))
+	localService, lagoonService := cleanRoute(mongoPath)
+	mongoUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
+	mongoPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
+	mongoHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
+	mongoPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "27017")
+	mongoDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
 	if localCheck != "" {
-		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", lagoonUsername, lagoonPassword, lagoonHost, lagoonPort, lagoonDatabase)
-		database = lagoonDatabase
+		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDatabase)
+		database = mongoDatabase
 	} else {
-		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%d", localRoute, mongoPort)
-		database = os.Getenv("MONGO_DATABASE")
+		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%s", mongoHost, mongoPort)
+		database = mongoDatabase
 	}
+	log.Print(fmt.Sprintf("Using %s as the connstring", mongoConnectionStr))
+
 	fmt.Fprintf(w, mongoConnector(mongoConnectionStr, database))
 }
 
@@ -58,7 +58,7 @@ func cleanMongoOutput(docs []primitive.M) string {
 		v := strings.SplitN(value, " ", 2)
 		fmt.Fprintf(b, "\"%s=%s\"\n", v[0], v[1])
 	}
-	host := fmt.Sprintf(`"SERVICE_HOST=%s"`, mongoVersion)
+	host := fmt.Sprintf(`"SERVICE_HOST=%s"`, mongoHost)
 	mongoOutput := host + "\n" + b.String()
 	return mongoOutput
 }
