@@ -15,17 +15,30 @@ var (
 	mariadbUser          = os.Getenv("MARIADB_USERNAME")
 	mariadbPassword      = os.Getenv("MARIADB_PASSWORD")
 	mariadb              = os.Getenv("MARIADB_DATABASE")
-	mariadbHost          = os.Getenv("MARIADB_HOST")
 	mariadbPort          = 3306
-	mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", mariadbUser, mariadbPassword, mariadbHost, mariadbPort, mariadb)
+	mariadbVersion       string
+	mariadbConnectionStr string
 )
 
 func mariadbHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, dbConnectorPairs(mariadbConnector(), mariadbHost))
+	mariadbPath := r.URL.Path
+	localRoute, lagoonRoute := cleanRoute(mariadbPath)
+	lagoonUsername := os.Getenv(fmt.Sprintf("%s_USERNAME", lagoonRoute))
+	lagoonPassword := os.Getenv(fmt.Sprintf("%s_PASSWORD", lagoonRoute))
+	lagoonDatabase := os.Getenv(fmt.Sprintf("%s_DATABASE", lagoonRoute))
+	lagoonPort := os.Getenv(fmt.Sprintf("%s_PORT", lagoonRoute))
+	lagoonHost := os.Getenv(fmt.Sprintf("%s_HOST", lagoonRoute))
+
+	if localCheck != "" {
+		mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", lagoonUsername, lagoonPassword, lagoonHost, lagoonPort, lagoonDatabase)
+	} else {
+		mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", mariadbUser, mariadbPassword, localRoute, mariadbPort, mariadb)
+	}
+	fmt.Fprintf(w, dbConnectorPairs(mariadbConnector(mariadbConnectionStr), mariadbVersion))
 }
 
-func mariadbConnector() map[string]string {
-	db, err := sql.Open("mysql", mariadbConnectionStr)
+func mariadbConnector(connectionString string) map[string]string {
+	db, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		log.Print(err)
 	}
@@ -35,7 +48,7 @@ func mariadbConnector() map[string]string {
 	createTable := "CREATE TABLE IF NOT EXISTS env(env_key text, env_value text)"
 	_, err = db.Exec(createTable)
 	if err != nil {
-		panic(err.Error())
+		log.Print(err)
 	}
 
 	query := "INSERT INTO env(env_key, env_value) VALUES (?, ?)"
@@ -44,7 +57,7 @@ func mariadbConnector() map[string]string {
 		pair := strings.SplitN(e, "=", 2)
 		_, err := db.Exec(query, pair[0], pair[1])
 		if err != nil {
-			panic(err.Error())
+			log.Print(err)
 		}
 	}
 
@@ -53,6 +66,8 @@ func mariadbConnector() map[string]string {
 	if err != nil {
 		log.Print(err)
 	}
+
+	db.QueryRow("SELECT VERSION()").Scan(&mariadbVersion)
 
 	defer rows.Close()
 	results := make(map[string]string)
