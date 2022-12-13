@@ -18,6 +18,7 @@ import (
 
 var (
 	mongoConnectionStr string
+	authTLSString	   string
 	mongoHost 		   string
 	database           string
 )
@@ -30,8 +31,21 @@ func mongoHandler(w http.ResponseWriter, r *http.Request) {
 	mongoHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
 	mongoPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "27017")
 	mongoDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
+	mongoAuthTLS := getEnv(fmt.Sprintf("%s_AUTHTLS", lagoonService), "")
+	mongoAuthSource := getEnv(fmt.Sprintf("%s_AUTHSOURCE", lagoonService), "")
 
-	if mongoHost != localService {
+	authTLSString = ""
+	if mongoAuthTLS == "True" {
+		authTLSString = "ssl=true&sslInsecure=true&tls=true&tlsInsecure=true"
+		if mongoAuthSource != "" {
+			authTLSString = fmt.Sprintf("authSource=%s&ssl=true&sslInsecure=true&tls=true&tlsInsecure=true", mongoAuthSource)
+		}
+	}
+
+	if authTLSString != "" {
+		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?%s", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDatabase, authTLSString)
+		database = mongoDatabase
+	} else if mongoHost != localService {
 		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDatabase)
 		database = mongoDatabase
 	} else {

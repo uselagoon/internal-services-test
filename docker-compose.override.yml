@@ -17,6 +17,13 @@ services:
       - POSTGRES_SECURE_DATABASE=secure
       - POSTGRES_SECURE_HOST=postgres-secure
       - POSTGRES_SECURE_PORT=5432
+      - MONGO_TLS_USERNAME=root
+      - MONGO_TLS_PASSWORD=password
+      - MONGO_TLS_DATABASE=admin
+      - MONGO_TLS_HOST=mongo-tls
+      - MONGO_TLS_PORT=27017
+      - MONGO_TLS_AUTHSOURCE=admin
+      - MONGO_TLS_AUTHTLS=True
 
   mariadb-10-4-drupal:
     image: uselagoon/mariadb-10.4-drupal
@@ -29,13 +36,6 @@ services:
       - LAGOON_GIT_SHA=SHA256
       - LAGOON_ENVIRONMENT_TYPE=development
 
-  mongo-somedb:
-    image: uselagoon/mongo-4:latest
-    labels:
-      lagoon.type: mongo
-    ports:
-      - '27017'
-
   postgres-secure:
     image: testlagoon/postgres-15:main
     labels:
@@ -46,3 +46,14 @@ services:
       - POSTGRES_PASSWORD=secure
       - POSTGRES_USER=secure
       - POSTGRES_DB=secure
+
+  mongo-tls:
+    build:
+      context: test-resources
+      dockerfile: mongo-tls.Dockerfile
+    restart: always
+    ports:
+      - '27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'root'
+      MONGO_INITDB_ROOT_PASSWORD: 'password'
