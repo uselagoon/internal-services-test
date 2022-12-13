@@ -23,8 +23,8 @@ func main() {
 	r.HandleFunc("/{postgres:postgres-.*}", postgresHandler)
 	r.HandleFunc("/{redis:redis-.*}", redisHandler)
 	r.HandleFunc("/{solr:solr-.*}", solrHandler)
-	r.HandleFunc("/mongo-4", mongoHandler)
-	r.HandleFunc("/opensearch-2", opensearchHandler)
+	r.HandleFunc("/{mongo:mongo-.*}", mongoHandler)
+	r.HandleFunc("/{opensearch:opensearch-.*}", opensearchHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":3000", nil))
@@ -60,8 +60,17 @@ func connectorKeyValues(values []string) string {
 
 func cleanRoute(basePath string) (string, string) {
 	cleanRoute := strings.ReplaceAll(basePath, "/", "")
-	localRoute := strings.ReplaceAll(cleanRoute, "10.", "10-")
-	replaceHyphen := strings.ReplaceAll(localRoute, "-", "_")
-	lagoonRoute := strings.ToUpper(replaceHyphen)
-	return localRoute, lagoonRoute
+	localService := strings.ReplaceAll(cleanRoute, "10.", "10-")
+	replaceHyphen := strings.ReplaceAll(localService, "-", "_")
+	lagoonService := strings.ToUpper(replaceHyphen)
+	return localService, lagoonService
+}
+
+// getEnv get key environment variable if exist otherwise return defalutValue
+func getEnv(key, defaultValue string) string {
+    value := os.Getenv(key)
+    if len(value) == 0 {
+        return defaultValue
+    }
+    return value
 }
