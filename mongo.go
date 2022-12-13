@@ -31,7 +31,7 @@ func mongoHandler(w http.ResponseWriter, r *http.Request) {
 	mongoPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "27017")
 	mongoDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
-	if localCheck != "" {
+	if mongoHost != localService {
 		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDatabase)
 		database = mongoDatabase
 	} else {
