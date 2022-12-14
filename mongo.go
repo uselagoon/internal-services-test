@@ -18,7 +18,7 @@ import (
 
 var (
 	mongoConnectionStr string
-	mongoHost 		   string
+	mongoHost          string
 	database           string
 )
 
@@ -45,7 +45,7 @@ func mongoHandler(w http.ResponseWriter, r *http.Request) {
 
 func cleanMongoOutput(docs []primitive.M) string {
 	valStr := fmt.Sprint(docs)
-	r := regexp.MustCompile(`(?:LAGOON_\w*)\s\w*:(?:\w*)`)
+	r := regexp.MustCompile(`(?:LAGOON_\w*)\s\w*:(?:[^\[\]\)\(]*)`)
 	matches := r.FindAllString(valStr, -1)
 	var mongoResults []string
 	for _, str := range matches {
