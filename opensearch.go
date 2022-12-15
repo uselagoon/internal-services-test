@@ -41,7 +41,7 @@ func cleanOpensearchOutput(sr *opensearchapi.Response) string {
 	}
 
 	var matches []string
-	r := regexp.MustCompile(`LAGOON_\w*:.\w*`)
+	r := regexp.MustCompile(`LAGOON_\w*:(?:[^\[\]\)\(\s])*`)
 	for _, str := range values {
 		matches = r.FindAllString(str, -1)
 	}
