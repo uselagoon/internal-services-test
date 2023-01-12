@@ -48,6 +48,20 @@ services:
     ports:
       - '27017'
 
+  mysql-5-7:
+    image: chrisgio/testimages:mysql-5.7 # Placeholder image - to be updated
+    labels:
+      lagoon.type: mariadb
+    ports:
+      - "3306"
+
+  mysql-8-0:
+    image: chrisgio/testimages:mysql-8.0 # Placeholder image - to be updated
+    labels:
+      lagoon.type: mariadb
+    ports:
+      - "3306"
+
   opensearch-2:
     image: uselagoon/opensearch-2:latest
     environment:
