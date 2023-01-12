@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/{solr:solr-.*}", solrHandler)
 	r.HandleFunc("/{mongo:mongo-.*}", mongoHandler)
 	r.HandleFunc("/{opensearch:opensearch-.*}", opensearchHandler)
+	r.HandleFunc("/{mysql:mysql-.*}", mysqlHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":3000", nil))
@@ -60,7 +61,7 @@ func connectorKeyValues(values []string) string {
 
 func cleanRoute(basePath string) (string, string) {
 	cleanRoute := strings.ReplaceAll(basePath, "/", "")
-	localService := strings.ReplaceAll(cleanRoute, "10.", "10-")
+	localService := strings.ReplaceAll(cleanRoute, ".", "-")
 	replaceHyphen := strings.ReplaceAll(localService, "-", "_")
 	lagoonService := strings.ToUpper(replaceHyphen)
 	return localService, lagoonService
@@ -68,9 +69,9 @@ func cleanRoute(basePath string) (string, string) {
 
 // getEnv get key environment variable if exist otherwise return defalutValue
 func getEnv(key, defaultValue string) string {
-    value := os.Getenv(key)
-    if len(value) == 0 {
-        return defaultValue
-    }
-    return value
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return defaultValue
+	}
+	return value
 }
