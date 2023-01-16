@@ -49,14 +49,14 @@ services:
       - '27017'
 
   mysql-5-7:
-    image: chrisgio/testimages:mysql-5.7 # Placeholder image - to be updated
+    image: testlagoon/mysql-5.7:experimental
     labels:
       lagoon.type: mariadb
     ports:
       - "3306"
 
   mysql-8-0:
-    image: chrisgio/testimages:mysql-8.0 # Placeholder image - to be updated
+    image: testlagoon/mysql-8.0:experimental
     labels:
       lagoon.type: mariadb
     ports:
