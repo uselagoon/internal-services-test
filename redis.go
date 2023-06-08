@@ -16,8 +16,8 @@ var (
 )
 
 func redisHandler(w http.ResponseWriter, r *http.Request) {
-	redisPath := r.URL.Path
-	redisRoute := strings.ReplaceAll(redisPath, "/", "")
+	service := r.URL.Query().Get("service")
+	redisRoute := strings.ReplaceAll(service, "/", "")
 	redisConnectionStr := fmt.Sprintf("%s:6379", redisRoute)
 	fmt.Fprintf(w, redisConnector(redisConnectionStr, redisRoute))
 }

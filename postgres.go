@@ -18,8 +18,8 @@ var (
 )
 
 func postgresHandler(w http.ResponseWriter, r *http.Request) {
-	postgresPath := r.URL.Path
-	localService, lagoonService := cleanRoute(postgresPath)
+	service := r.URL.Query().Get("service")
+	localService, lagoonService := cleanRoute(service)
 	postgresUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
 	postgresPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
 	postgresHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)

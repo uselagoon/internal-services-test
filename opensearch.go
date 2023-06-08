@@ -17,12 +17,15 @@ import (
 )
 
 var (
-	opensearchHost          = os.Getenv("OPENSEARCH_HOST")
-	opensearchConnectionStr = fmt.Sprintf("http://%s:9200", opensearchHost)
+	opensearchHost string
 )
 
 func opensearchHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, opensearchConnector())
+	service := r.URL.Query().Get("service")
+	opensearchHost = service
+	opensearchConnectionStr := fmt.Sprintf("http://%s:9200", opensearchHost)
+
+	fmt.Fprintf(w, opensearchConnector(opensearchConnectionStr))
 }
 
 func cleanOpensearchOutput(sr *opensearchapi.Response) string {
@@ -90,12 +93,12 @@ func createOpensearchIndexDocument(client *opensearch.Client) {
 	time.Sleep(1 * time.Second)
 }
 
-func opensearchConnector() string {
+func opensearchConnector(connectionString string) string {
 	client, _ := opensearch.NewClient(opensearch.Config{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
-		Addresses: []string{opensearchConnectionStr},
+		Addresses: []string{connectionString},
 	})
 
 	createOpensearchIndexDocument(client)

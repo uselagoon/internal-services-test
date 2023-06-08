@@ -19,12 +19,12 @@ type funcType func() map[string]string
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/{mariadb:mariadb-.*}", mariadbHandler)
-	r.HandleFunc("/{postgres:postgres-.*}", postgresHandler)
-	r.HandleFunc("/{redis:redis-.*}", redisHandler)
-	r.HandleFunc("/{solr:solr-.*}", solrHandler)
-	r.HandleFunc("/{mongo:mongo-.*}", mongoHandler)
-	r.HandleFunc("/{opensearch:opensearch-.*}", opensearchHandler)
+	r.HandleFunc("/{mariadb:mariadb.*}", mariadbHandler)
+	r.HandleFunc("/{postgres:postgres.*}", postgresHandler)
+	r.HandleFunc("/{redis:redis.*}", redisHandler)
+	r.HandleFunc("/{solr:solr.*}", solrHandler)
+	r.HandleFunc("/{mongo:mongo.*}", mongoHandler)
+	r.HandleFunc("/{opensearch:opensearch.*}", opensearchHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":3000", nil))
@@ -68,9 +68,9 @@ func cleanRoute(basePath string) (string, string) {
 
 // getEnv get key environment variable if exist otherwise return defalutValue
 func getEnv(key, defaultValue string) string {
-    value := os.Getenv(key)
-    if len(value) == 0 {
-        return defaultValue
-    }
-    return value
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return defaultValue
+	}
+	return value
 }
