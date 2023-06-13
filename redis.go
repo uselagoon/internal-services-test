@@ -16,7 +16,11 @@ var (
 )
 
 func redisHandler(w http.ResponseWriter, r *http.Request) {
-	service := r.URL.Query().Get("service")
+	service, error := verifyDriverService(r)
+	if error != nil {
+		fmt.Fprintf(w, error.Error())
+		return
+	}
 	redisRoute := strings.ReplaceAll(service, "/", "")
 	redisConnectionStr := fmt.Sprintf("%s:6379", redisRoute)
 	fmt.Fprintf(w, redisConnector(redisConnectionStr, redisRoute))

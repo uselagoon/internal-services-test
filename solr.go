@@ -12,7 +12,11 @@ import (
 )
 
 func solrHandler(w http.ResponseWriter, r *http.Request) {
-	service := r.URL.Query().Get("service")
+	service, error := verifyDriverService(r)
+	if error != nil {
+		fmt.Fprintf(w, error.Error())
+		return
+	}
 	solrRoute := strings.ReplaceAll(service, "/", "")
 	solrConnectionStr := fmt.Sprintf("http://%s:8983/solr", solrRoute)
 	fmt.Fprintf(w, convertSolrDoc(solrConnector(solrConnectionStr), solrRoute))

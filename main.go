@@ -2,10 +2,12 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -19,7 +21,6 @@ type funcType func() map[string]string
 
 func main() {
 	r := mux.NewRouter()
-	//r.HandleFunc("/{mariadb:mariadb.*}", mariadbHandler)
 	r.HandleFunc("/mariadb", mariadbHandler)
 	r.HandleFunc("/postgres", postgresHandler)
 	r.HandleFunc("/redis", redisHandler)
@@ -65,6 +66,18 @@ func cleanRoute(basePath string) (string, string) {
 	replaceHyphen := strings.ReplaceAll(localService, "-", "_")
 	lagoonService := strings.ToUpper(replaceHyphen)
 	return localService, lagoonService
+}
+
+func verifyDriverService(r *http.Request) (string, error) {
+	driver := strings.ReplaceAll(r.URL.Path, "/", "")
+	serviceVersion := r.URL.Query().Get("service")
+	regexp := regexp.MustCompile(`(\w*)-`)
+	service := regexp.FindStringSubmatch(serviceVersion)
+	if driver != service[1] {
+		incompatibleError := fmt.Sprintf("%s is not a compatible driver with service: %s", driver, service[1])
+		return "", errors.New(incompatibleError)
+	}
+	return serviceVersion, nil
 }
 
 // getEnv get key environment variable if exist otherwise return defalutValue

@@ -23,7 +23,11 @@ var (
 )
 
 func mongoHandler(w http.ResponseWriter, r *http.Request) {
-	service := r.URL.Query().Get("service")
+	service, error := verifyDriverService(r)
+	if error != nil {
+		fmt.Fprintf(w, error.Error())
+		return
+	}
 	localService, lagoonService := cleanRoute(service)
 	mongoUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
 	mongoPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
