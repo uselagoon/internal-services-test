@@ -2,13 +2,12 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"regexp"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -29,7 +28,8 @@ func main() {
 	r.HandleFunc("/opensearch", opensearchHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	timeoutHandler := http.TimeoutHandler(r, time.Second*3, "Incompatible driver and service")
+	log.Fatal(http.ListenAndServe(":3000", timeoutHandler))
 }
 
 func handleReq(w http.ResponseWriter, r *http.Request) {
@@ -68,17 +68,17 @@ func cleanRoute(basePath string) (string, string) {
 	return localService, lagoonService
 }
 
-func verifyDriverService(r *http.Request) (string, error) {
-	driver := strings.ReplaceAll(r.URL.Path, "/", "")
-	serviceVersion := r.URL.Query().Get("service")
-	regexp := regexp.MustCompile(`(\w*)-`)
-	service := regexp.FindStringSubmatch(serviceVersion)
-	if driver != service[1] {
-		incompatibleError := fmt.Sprintf("%s is not a compatible driver with service: %s", driver, service[1])
-		return "", errors.New(incompatibleError)
-	}
-	return serviceVersion, nil
-}
+//func verifyDriverService(r *http.Request) (string, error) {
+//	driver := strings.ReplaceAll(r.URL.Path, "/", "")
+//	serviceVersion := r.URL.Query().Get("service")
+//	regexp := regexp.MustCompile(`(\w*)-`)
+//	service := regexp.FindStringSubmatch(serviceVersion)
+//	if driver != service[1] {
+//		incompatibleError := fmt.Sprintf("%s is not a compatible driver with service: %s", driver, service[1])
+//		return "", errors.New(incompatibleError)
+//	}
+//	return serviceVersion, nil
+//}
 
 // getEnv get key environment variable if exist otherwise return defalutValue
 func getEnv(key, defaultValue string) string {

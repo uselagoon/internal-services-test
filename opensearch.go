@@ -21,11 +21,7 @@ var (
 )
 
 func opensearchHandler(w http.ResponseWriter, r *http.Request) {
-	service, error := verifyDriverService(r)
-	if error != nil {
-		fmt.Fprintf(w, error.Error())
-		return
-	}
+	service := r.URL.Query().Get("service")
 	opensearchHost = service
 	opensearchConnectionStr := fmt.Sprintf("http://%s:9200", opensearchHost)
 
