@@ -20,15 +20,15 @@ services:
       - LAGOON_GIT_SHA=SHA256
       - LAGOON_ENVIRONMENT_TYPE=development
 
-  mariadb-10-4:
-    image: uselagoon/mariadb-10.4:latest
+  mariadb-10-5:
+    image: uselagoon/mariadb-10.5:latest
     labels:
       lagoon.type: mariadb-single
     ports:
       - '3306'
 
-  mariadb-10-6:
-    image: uselagoon/mariadb-10.6:latest
+  mariadb-10-11:
+    image: uselagoon/mariadb-10.11:latest
     labels:
       lagoon.type: mariadb
     ports:
@@ -78,14 +78,14 @@ services:
     ports:
       - '27017'
 
-  redis-5:
+  redis-6:
     image: uselagoon/redis-5:latest
     labels:
       lagoon.type: redis
     ports:
       - '6379'
 
-  redis-6:
+  redis-7:
     image: uselagoon/redis-6:latest
     labels:
       lagoon.type: redis

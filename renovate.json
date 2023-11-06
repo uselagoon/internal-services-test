@@ -3,5 +3,11 @@
   "extends": [
     "config:base"
   ],
-  "dependencyDashboard": true
+  "dependencyDashboard": true,
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub actions"
+    }
+  ]
 }

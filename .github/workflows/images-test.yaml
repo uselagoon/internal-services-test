@@ -19,7 +19,7 @@ jobs:
         fetch-depth: "0"
     - name: Pull all images
       run: |
-        docker-compose pull --ignore-pull-failures
+        docker compose pull --ignore-pull-failures
     - name: Install test harness
       run: |
         yarn add leia-parser mocha chai command-line-test
