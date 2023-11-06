@@ -3,11 +3,11 @@ module internal-services-test
 go 1.21
 
 require (
-	github.com/go-redis/redis/v9 v9.3.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 	github.com/opensearch-project/opensearch-go v1.1.0
+	github.com/redis/go-redis/v9 v9.3.0
 	github.com/vanng822/go-solr v0.10.0
 	go.mongodb.org/mongo-driver v1.12.1
 )
@@ -19,7 +19,6 @@ require (
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/klauspost/compress v1.17.2 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
-	github.com/onsi/gomega v1.21.1 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
