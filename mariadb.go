@@ -3,12 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -17,8 +16,8 @@ var (
 )
 
 func mariadbHandler(w http.ResponseWriter, r *http.Request) {
-	mariadbPath := r.URL.Path
-	localService, lagoonService := cleanRoute(mariadbPath)
+	service := r.URL.Query().Get("service")
+	localService, lagoonService := cleanRoute(service)
 	mariadbUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
 	mariadbPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
 	mariadbHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
