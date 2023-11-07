@@ -5,18 +5,20 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"os"
 )
 
 func persistentStorageHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("path")
+	log.Print(fmt.Sprintf("Writing to %s", path))
 	fmt.Fprintf(w, persistentStorageConnector(path))
 }
 
 func persistentStorageConnector(route string) string {
 	if route != os.Getenv("STORAGE_LOCATION") {
-		return "Storage location is not defined - ensure format matches '/storage?path'"
+		return "Storage location is not defined - ensure format matches '/storage?path=[path]'"
 	}
 	path := route + "/storage.txt"
 	f, err := os.Create(path)
@@ -25,17 +27,21 @@ func persistentStorageConnector(route string) string {
 	}
 
 	for _, e := range os.Environ() {
-		_, err := f.WriteString(strconv.Quote(e) + "\n")
-		if err != nil {
-			log.Print(err)
-		}
-		e := f.Sync()
-		if e != nil {
-			log.Print(e)
+		if strings.Contains(e, "LAGOON_") {
+			_, err := f.WriteString(strconv.Quote(e) + "\n")
+			if err != nil {
+				log.Print(err)
+			}
+			e := f.Sync()
+			if e != nil {
+				log.Print(e)
+			}
 		}
 	}
 
 	fileBuffer, err := os.ReadFile(path)
 	var results = string(fileBuffer)
-	return results
+	storagePath := fmt.Sprintf(`"STORAGE_PATH=%s"`, path)
+	storageResults := storagePath + "\n" + results
+	return storageResults
 }
