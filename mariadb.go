@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
@@ -16,8 +17,8 @@ var (
 )
 
 func mariadbHandler(w http.ResponseWriter, r *http.Request) {
-	mariadbPath := r.URL.Path
-	localService, lagoonService := cleanRoute(mariadbPath)
+	service := r.URL.Query().Get("service")
+	localService, lagoonService := cleanRoute(service)
 	mariadbUser := machineryEnvVars.GetEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
 	mariadbPassword := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
 	mariadbHost := machineryEnvVars.GetEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)

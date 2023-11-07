@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
@@ -18,8 +17,7 @@ import (
 )
 
 var (
-	opensearchHost          = machineryEnvVars.GetEnv("OPENSEARCH_HOST", "opensearch-2")
-	opensearchConnectionStr = fmt.Sprintf("http://%s:9200", opensearchHost)
+	opensearchHost string
 )
 
 func opensearchHandler(w http.ResponseWriter, r *http.Request) {
