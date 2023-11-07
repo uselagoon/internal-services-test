@@ -4,6 +4,7 @@ volumes:
   solr-7-data:
   solr-8-data:
   opensearch-2-data:
+  scratch:
 
 services:
   web:
@@ -11,7 +12,7 @@ services:
       context: .
       dockerfile: Dockerfile
     labels:
-      lagoon.type: basic
+      lagoon.type: basic-persistent
     ports:
       - '3000:3000'
     container_name: go-web
@@ -19,6 +20,9 @@ services:
       - LAGOON_TEST_VAR=internal-services-test
       - LAGOON_GIT_SHA=SHA256
       - LAGOON_ENVIRONMENT_TYPE=development
+      - STORAGE_LOCATION=/app/files
+    volumes:
+      - scratch:/app/files
 
   mariadb-10-5:
     image: uselagoon/mariadb-10.5:latest

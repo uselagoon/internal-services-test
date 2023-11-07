@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/solr", solrHandler)
 	r.HandleFunc("/mongo", mongoHandler)
 	r.HandleFunc("/opensearch", opensearchHandler)
+	r.HandleFunc("/storage", persistentStorageHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 

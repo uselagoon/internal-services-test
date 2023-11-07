@@ -27,7 +27,7 @@ func mongoHandler(w http.ResponseWriter, r *http.Request) {
 	localService, lagoonService := cleanRoute(service)
 	mongoUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
 	mongoPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
-	mongoHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
+	mongoHost = getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
 	mongoPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "27017")
 	mongoDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
