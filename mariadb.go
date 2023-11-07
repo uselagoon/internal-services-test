@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
@@ -16,13 +16,13 @@ var (
 )
 
 func mariadbHandler(w http.ResponseWriter, r *http.Request) {
-	service := r.URL.Query().Get("service")
-	localService, lagoonService := cleanRoute(service)
-	mariadbUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
-	mariadbPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
-	mariadbHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
-	mariadbPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "3306")
-	mariadbDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
+	mariadbPath := r.URL.Path
+	localService, lagoonService := cleanRoute(mariadbPath)
+	mariadbUser := machineryEnvVars.GetEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
+	mariadbPassword := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
+	mariadbHost := machineryEnvVars.GetEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
+	mariadbPort := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PORT", lagoonService), "3306")
+	mariadbDatabase := machineryEnvVars.GetEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
 	mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mariadbUser, mariadbPassword, mariadbHost, mariadbPort, mariadbDatabase)
 	log.Print(fmt.Sprintf("Using %s as the connstring", mariadbConnectionStr))

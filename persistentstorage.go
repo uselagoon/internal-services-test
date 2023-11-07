@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
-
-	"os"
 )
 
 func persistentStorageHandler(w http.ResponseWriter, r *http.Request) {
@@ -17,7 +17,7 @@ func persistentStorageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func persistentStorageConnector(route string) string {
-	if route != os.Getenv("STORAGE_LOCATION") {
+	if route != machineryEnvVars.GetEnv("STORAGE_LOCATION", "") {
 		return "Storage location is not defined - ensure format matches '/storage?path=[path]'"
 	}
 	path := route + "/storage.txt"

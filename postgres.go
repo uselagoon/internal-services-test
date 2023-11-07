@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
@@ -18,13 +19,13 @@ var (
 )
 
 func postgresHandler(w http.ResponseWriter, r *http.Request) {
-	service := r.URL.Query().Get("service")
-	localService, lagoonService := cleanRoute(service)
-	postgresUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
-	postgresPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
-	postgresHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
-	postgresPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "5432")
-	postgresDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
+	postgresPath := r.URL.Path
+	localService, lagoonService := cleanRoute(postgresPath)
+	postgresUser := machineryEnvVars.GetEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
+	postgresPassword := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
+	postgresHost := machineryEnvVars.GetEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
+	postgresPort := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PORT", lagoonService), "5432")
+	postgresDatabase := machineryEnvVars.GetEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
 	postgresConnectionStr = fmt.Sprintf("user=%s password=%s dbname=%s sslmode=%s host=%s port=%s", postgresUser, postgresPassword, postgresDatabase, postgresSSL, postgresHost, postgresPort)
 	log.Print(fmt.Sprintf("Using %s as the connstring", postgresConnectionStr))
