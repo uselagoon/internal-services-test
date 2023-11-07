@@ -8,9 +8,7 @@ RUN go get github.com/joho/godotenv
 
 RUN go build && chmod +x ./internal-services-test
 
-ENV SOLR_HOST=solr \
-    REDIS_HOST=redis \
-    OPENSEARCH_HOST=opensearch-2
+ENV STORAGE_LOCATION='/app/files'
 
 EXPOSE 3000
 

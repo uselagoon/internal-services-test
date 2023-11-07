@@ -76,6 +76,10 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=s
 # solr-8 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-8" | grep "SERVICE_HOST=solr-8"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-8" | grep "LAGOON_TEST_VAR=internal-services-test"
+
+# persistent storage should be able to read/write data
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/storage?path=/app/files" | grep "STORAGE_PATH=/app/files/storage.txt"
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/storage?path=/app/files" | grep "LAGOON_TEST_VAR=internal-services-test"
 ```
 
 Destroy tests
