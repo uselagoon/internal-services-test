@@ -10,7 +10,7 @@ import (
 )
 
 func persistentStorageHandler(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.RawQuery
+	path := r.URL.Query().Get("path")
 	fmt.Fprintf(w, persistentStorageConnector(path))
 }
 
