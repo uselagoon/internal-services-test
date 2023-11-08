@@ -82,7 +82,7 @@ func mongoConnector(connectionString string, database string) string {
 
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
-		bsonData := bson.D{{"Key", pair[0]}, {"value", pair[1]}}
+		bsonData := bson.D{{Key: "Key", Value: pair[0]}, {Key: "value", Value: pair[1]}}
 		environmentVariables = append(environmentVariables, bsonData)
 		if err != nil {
 			log.Print(err)
@@ -93,7 +93,7 @@ func mongoConnector(connectionString string, database string) string {
 	if err != nil {
 		log.Print(err)
 	}
-	filter := bson.D{{"Key", primitive.Regex{Pattern: "LAGOON", Options: ""}}}
+	filter := bson.D{{Key: "Key", Value: primitive.Regex{Pattern: "LAGOON", Options: ""}}}
 	cursor, _ := envCollection.Find(context.TODO(), filter, options.Find().SetProjection(bson.M{"_id": 0}))
 	var docs []bson.M
 	if err = cursor.All(context.TODO(), &docs); err != nil {
