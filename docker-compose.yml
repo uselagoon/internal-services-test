@@ -1,9 +1,10 @@
 version: '2'
 
 volumes:
-  solrData:
-  solrData7:
-  opensearch-data1:
+  solr-7-data:
+  solr-8-data:
+  opensearch-2-data:
+  scratch:
 
 services:
   web:
@@ -11,42 +12,45 @@ services:
       context: .
       dockerfile: Dockerfile
     labels:
-      lagoon.type: basic
+      lagoon.type: basic-persistent
     ports:
       - '3000:3000'
     container_name: go-web
     environment:
-      - LAGOON_TEST_VAR=test
+      - LAGOON_TEST_VAR=internal-services-test
       - LAGOON_GIT_SHA=SHA256
       - LAGOON_ENVIRONMENT_TYPE=development
+      - STORAGE_LOCATION=/app/files
+    volumes:
+      - scratch:/app/files
 
-  mariadb-10-4:
-    image: uselagoon/mariadb-10.4
-    labels:
-      lagoon.type: mariadb-single
-    ports:
-      - '3306'
-  
   mariadb-10-5:
-    image: uselagoon/mariadb-10.5
+    image: uselagoon/mariadb-10.5:latest
     labels:
       lagoon.type: mariadb-single
     ports:
       - '3306'
 
-  mariadb-10-6:
-    image: uselagoon/mariadb-10.6
+  mariadb-10-11:
+    image: uselagoon/mariadb-10.11:latest
     labels:
       lagoon.type: mariadb
     ports:
       - '3306'
 
-  mongo-4:
-    image: uselagoon/mongo:latest
+  postgres-11:
+    image: uselagoon/postgres-11:latest
     labels:
-      lagoon.type: mongo
+      lagoon.type: postgres-single
     ports:
-      - '27017'
+      - '5432'
+
+  postgres-15:
+    image: uselagoon/postgres-15:latest
+    labels:
+      lagoon.type: postgres
+    ports:
+      - '5432'
 
   mysql-5-7:
     image: testlagoon/mysql-5.7:experimental
@@ -66,9 +70,9 @@ services:
     image: uselagoon/opensearch-2:latest
     environment:
     - cluster.name=opensearch-cluster
-    - node.name=opensearch
-    - discovery.seed_hosts=opensearch
-    - cluster.initial_cluster_manager_nodes=opensearch
+    - node.name=opensearch-2
+    - discovery.seed_hosts=opensearch-2
+    - cluster.initial_cluster_manager_nodes=opensearch-2
     - bootstrap.memory_lock=true
     - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -79,75 +83,53 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      - opensearch-data1:/usr/share/opensearch/data
+      - opensearch-2-data:/usr/share/opensearch/data
     labels:
       lagoon.type: opensearch
     ports:
       - '9200'
 
-  postgres-11:
-    image: uselagoon/postgres-11
+  mongo-4:
+    image: uselagoon/mongo-4:latest
     labels:
-      lagoon.type: postgres-single
+      lagoon.type: mongo
     ports:
-      - '5432'
+      - '27017'
 
-  postgres-12:
-    image: uselagoon/postgres-12
-    labels:
-      lagoon.type: postgres-single
-    ports:
-      - '5432'
-
-  postgres-13:
-    image: uselagoon/postgres-13
-    labels:
-      lagoon.type: postgres-single
-    ports:
-      - '5432'
-
-  postgres-14:
-    image: uselagoon/postgres-14
-    labels:
-      lagoon.type: postgres
-    ports:
-      - '5432'
-
-  redis-5:
-    image: uselagoon/redis-5
+  redis-6:
+    image: uselagoon/redis-5:latest
     labels:
       lagoon.type: redis
     ports:
       - '6379'
 
-  redis-6:
-    image: uselagoon/redis-6
+  redis-7:
+    image: uselagoon/redis-6:latest
     labels:
       lagoon.type: redis
     ports:
       - '6379'
 
   solr-7:
-    image: uselagoon/solr-7
+    image: uselagoon/solr-7:latest
     labels:
       lagoon.type: solr
     ports:
      - "8983"
     volumes:
-      - solrData7:/var/solr
+      - solr-7-data:/var/solr
     command:
       - solr-precreate
       - mycore
 
   solr-8:
-    image: uselagoon/solr-8
+    image: uselagoon/solr-8:latest
     labels:
       lagoon.type: solr
     ports:
      - "8983"
     volumes:
-      - solrData:/var/solr
+      - solr-8-data:/var/solr
     command:
       - solr-precreate
       - mycore
-

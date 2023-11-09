@@ -3,12 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -17,13 +17,13 @@ var (
 )
 
 func mysqlHandler(w http.ResponseWriter, r *http.Request) {
-	mysqlPath := r.URL.Path
-	localService, lagoonService := cleanRoute(mysqlPath)
-	mysqlUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
-	mysqlPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
-	mysqlHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
-	mysqlPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "3306")
-	mysqlDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
+	service := r.URL.Query().Get("service")
+	localService, lagoonService := cleanRoute(service)
+	mysqlUser := machineryEnvVars.GetEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
+	mysqlPassword := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
+	mysqlHost := machineryEnvVars.GetEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
+	mysqlPort := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PORT", lagoonService), "3306")
+	mysqlDatabase := machineryEnvVars.GetEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
 	mysqlConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDatabase)
 	log.Print(fmt.Sprintf("Using %s as the connstring", mysqlConnectionStr))

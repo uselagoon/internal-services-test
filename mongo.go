@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
@@ -23,13 +24,13 @@ var (
 )
 
 func mongoHandler(w http.ResponseWriter, r *http.Request) {
-	mongoPath := r.URL.Path
-	localService, lagoonService := cleanRoute(mongoPath)
-	mongoUser := getEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
-	mongoPassword := getEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
-	mongoHost := getEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
-	mongoPort := getEnv(fmt.Sprintf("%s_PORT", lagoonService), "27017")
-	mongoDatabase := getEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
+	service := r.URL.Query().Get("service")
+	localService, lagoonService := cleanRoute(service)
+	mongoUser := machineryEnvVars.GetEnv(fmt.Sprintf("%s_USERNAME", lagoonService), "lagoon")
+	mongoPassword := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PASSWORD", lagoonService), "lagoon")
+	mongoHost = machineryEnvVars.GetEnv(fmt.Sprintf("%s_HOST", lagoonService), localService)
+	mongoPort := machineryEnvVars.GetEnv(fmt.Sprintf("%s_PORT", lagoonService), "27017")
+	mongoDatabase := machineryEnvVars.GetEnv(fmt.Sprintf("%s_DATABASE", lagoonService), "lagoon")
 
 	if mongoHost != localService {
 		mongoConnectionStr = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDatabase)
@@ -81,7 +82,7 @@ func mongoConnector(connectionString string, database string) string {
 
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
-		bsonData := bson.D{{"Key", pair[0]}, {"value", pair[1]}}
+		bsonData := bson.D{{Key: "Key", Value: pair[0]}, {Key: "value", Value: pair[1]}}
 		environmentVariables = append(environmentVariables, bsonData)
 		if err != nil {
 			log.Print(err)
@@ -92,7 +93,7 @@ func mongoConnector(connectionString string, database string) string {
 	if err != nil {
 		log.Print(err)
 	}
-	filter := bson.D{{"Key", primitive.Regex{Pattern: "LAGOON", Options: ""}}}
+	filter := bson.D{{Key: "Key", Value: primitive.Regex{Pattern: "LAGOON", Options: ""}}}
 	cursor, _ := envCollection.Find(context.TODO(), filter, options.Find().SetProjection(bson.M{"_id": 0}))
 	var docs []bson.M
 	if err = cursor.All(context.TODO(), &docs); err != nil {

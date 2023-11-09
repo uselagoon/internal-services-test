@@ -3,32 +3,39 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"os"
 	"strings"
-
-	"github.com/gorilla/mux"
-)
-
-var (
-	localCheck = os.Getenv("LAGOON_ENVIRONMENT")
+	"time"
 )
 
 type funcType func() map[string]string
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/{mariadb:mariadb-.*}", mariadbHandler)
-	r.HandleFunc("/{postgres:postgres-.*}", postgresHandler)
-	r.HandleFunc("/{redis:redis-.*}", redisHandler)
-	r.HandleFunc("/{solr:solr-.*}", solrHandler)
-	r.HandleFunc("/{mongo:mongo-.*}", mongoHandler)
-	r.HandleFunc("/{opensearch:opensearch-.*}", opensearchHandler)
-	r.HandleFunc("/{mysql:mysql-.*}", mysqlHandler)
+	r.HandleFunc("/mariadb", mariadbHandler)
+	r.HandleFunc("/postgres", postgresHandler)
+	r.HandleFunc("/redis", redisHandler)
+	r.HandleFunc("/solr", solrHandler)
+	r.HandleFunc("/mongo", mongoHandler)
+	r.HandleFunc("/opensearch", opensearchHandler)
+	r.HandleFunc("/storage", persistentStorageHandler)
+	r.HandleFunc("/mysql", mysqlHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
-	log.Fatal(http.ListenAndServe(":3000", nil))
+
+	log.Fatal(http.ListenAndServe(":3000", timeoutHandler(r)))
+}
+
+func timeoutHandler(m *mux.Router) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		driver := strings.ReplaceAll(r.URL.Path, "/", "")
+		service := r.URL.Query().Get("service")
+		incompatibleError := fmt.Sprintf("%s is not a compatible driver with service: %s", driver, service)
+		timeoutHandler := http.TimeoutHandler(m, 3*time.Second, incompatibleError)
+		timeoutHandler.ServeHTTP(w, r)
+	}
 }
 
 func handleReq(w http.ResponseWriter, r *http.Request) {
@@ -62,16 +69,8 @@ func connectorKeyValues(values []string) string {
 func cleanRoute(basePath string) (string, string) {
 	cleanRoute := strings.ReplaceAll(basePath, "/", "")
 	localService := strings.ReplaceAll(cleanRoute, ".", "-")
+	//localService := strings.ReplaceAll(cleanRoute, "10.", "10-")
 	replaceHyphen := strings.ReplaceAll(localService, "-", "_")
 	lagoonService := strings.ToUpper(replaceHyphen)
 	return localService, lagoonService
-}
-
-// getEnv get key environment variable if exist otherwise return defalutValue
-func getEnv(key, defaultValue string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		return defaultValue
-	}
-	return value
 }
