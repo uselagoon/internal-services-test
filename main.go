@@ -69,7 +69,6 @@ func connectorKeyValues(values []string) string {
 func cleanRoute(basePath string) (string, string) {
 	cleanRoute := strings.ReplaceAll(basePath, "/", "")
 	localService := strings.ReplaceAll(cleanRoute, ".", "-")
-	//localService := strings.ReplaceAll(cleanRoute, "10.", "10-")
 	replaceHyphen := strings.ReplaceAll(localService, "-", "_")
 	lagoonService := strings.ToUpper(replaceHyphen)
 	return localService, lagoonService
