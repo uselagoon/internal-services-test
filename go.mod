@@ -8,7 +8,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/opensearch-project/opensearch-go/v2 v2.3.0
 	github.com/redis/go-redis/v9 v9.3.0
-	github.com/uselagoon/machinery v0.0.12
+	github.com/uselagoon/machinery v0.0.14
 	github.com/vanng822/go-solr v0.10.0
 	go.mongodb.org/mongo-driver v1.12.1
 )
