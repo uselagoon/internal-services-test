@@ -13,6 +13,7 @@ services:
       dockerfile: Dockerfile
     labels:
       lagoon.type: basic-persistent
+      lagoon.persistent: /app/files
     ports:
       - '3000:3000'
     container_name: go-web
