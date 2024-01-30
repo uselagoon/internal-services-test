@@ -17,10 +17,11 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: "0"
-    - uses: docker-practice/actions-setup-docker@master
-      timeout-minutes: 12
-    - run: |
+    - name: Install and test docker
+      run: |
         # set -x
+        brew install docker
+        brew install docker-compose
         docker version
         docker compose version
         docker-compose version
