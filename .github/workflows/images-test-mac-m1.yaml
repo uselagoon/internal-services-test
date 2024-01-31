@@ -1,4 +1,4 @@
-name: Image test routine
+name: Image test routine - Mac M1
 
 on:
   push:
@@ -17,11 +17,13 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: "0"
-    - name: Install and test docker
+    - name: Install docker
       run: |
         # set -x
-        brew install docker docker-compose colima
-        brew services start colima
+        brew install docker docker-compose
+    - name: Test docker
+      run: |
+        docker run --rm hello-world
         docker version
         mkdir -p ~/.docker/cli-plugins
         ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
