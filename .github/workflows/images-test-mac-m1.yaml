@@ -20,8 +20,8 @@ jobs:
     - name: Install and test docker
       run: |
         # set -x
-        brew install docker docker-compose colima
-        colima start
+        brew install docker docker-compose
+        brew services start docker
         docker version
         mkdir -p ~/.docker/cli-plugins
         ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
