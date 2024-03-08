@@ -31,7 +31,6 @@ docker run --rm --net internal-services-test_default jwilder/dockerize dockerize
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://mongo-4:27017 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://redis-6:6379 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://redis-7:6379 -timeout 1m
-docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://solr-7:8983 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://solr-8:8983 -timeout 1m
 
 # commons should be running Alpine Linux
@@ -68,10 +67,6 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/redis?service=
 # redis-7 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/redis?service=redis-7" | grep "SERVICE_HOST=redis-7"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/redis?service=redis-7" | grep "LAGOON_TEST_VAR=internal-services-test"
-
-# solr-7 should be able to read/write data
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-7" | grep "SERVICE_HOST=solr-7"
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-7" | grep "LAGOON_TEST_VAR=internal-services-test"
 
 # solr-8 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-8" | grep "SERVICE_HOST=solr-8"
