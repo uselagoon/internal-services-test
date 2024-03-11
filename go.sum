@@ -57,8 +57,8 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/uselagoon/machinery v0.0.16 h1:LGWUaESTXPfiTyJTJCC1i+3ghidY2qsf9li7mGbH9Wo=
-github.com/uselagoon/machinery v0.0.16/go.mod h1:Duljjz/3d/7m0jbmF1nVRDTNaMxMr6m+5LkgjiRrQaU=
+github.com/uselagoon/machinery v0.0.17 h1:rykgkboGvSX+aMa6MPXtR22DJ67eTPC4WITwpVDuj+Y=
+github.com/uselagoon/machinery v0.0.17/go.mod h1:Duljjz/3d/7m0jbmF1nVRDTNaMxMr6m+5LkgjiRrQaU=
 github.com/vanng822/go-solr v0.10.0 h1:oygAxyFL2apSN8vddxDXoyho40z66Guu9nwH7ANr6wM=
 github.com/vanng822/go-solr v0.10.0/go.mod h1:FSglzTPzoNVKTXP+SqEQiiz284cKzcKpeRXmwPa81wc=
 github.com/xdg-go/pbkdf2 v1.0.0 h1:Su7DPu48wXMwC3bs7MCNG+z4FhcyEuz5dlvchbq0B0c=
