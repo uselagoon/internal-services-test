@@ -32,6 +32,7 @@ docker run --rm --net internal-services-test_default jwilder/dockerize dockerize
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://redis-6:6379 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://redis-7:6379 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://solr-8:8983 -timeout 1m
+docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://solr-9:8983 -timeout 1m
 
 # commons should be running Alpine Linux
 docker compose exec -T commons sh -c "cat /etc/os-release" | grep "Alpine Linux"
@@ -71,6 +72,10 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/redis?service=
 # solr-8 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-8" | grep "SERVICE_HOST=solr-8"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-8" | grep "LAGOON_TEST_VAR=internal-services-test"
+
+# solr-9 should be able to read/write data
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-9" | grep "SERVICE_HOST=solr-9"
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=solr-9" | grep "LAGOON_TEST_VAR=internal-services-test"
 
 # persistent storage should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/storage?path=/app/files" | grep "STORAGE_PATH=/app/files/storage.txt"
