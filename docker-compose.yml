@@ -111,9 +111,10 @@ services:
      - "8983"
     volumes:
       - solr-8-data:/var/solr
-    command:
-      - solr-precreate
-      - mycore
+    command: ["sh", "-c", "
+        mkdir -p /var/solr/data;
+        solr-precreate mycore
+        "]
 
   solr-9:
     image: uselagoon/solr-9:latest
@@ -124,6 +125,7 @@ services:
      - "8983"
     volumes:
       - solr-9-data:/var/solr
-    command:
-      - solr-precreate
-      - mycore
+    command: ["sh", "-c", "
+        mkdir -p /var/solr/data;
+        solr-precreate mycore
+        "]
