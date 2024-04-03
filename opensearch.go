@@ -57,13 +57,13 @@ func cleanOpensearchOutput(sr *opensearchapi.SearchResp) string {
 
 func createOpensearchIndexDocument(client *opensearchapi.Client) {
 	settings := strings.NewReader(`{
-		'settings': {
-			'index': {
-				'number_of_shards': 1,
-				'number_of_replicas': 0
-				}
+		"settings": {
+			"index": {
+				"number_of_shards": 1,
+				"number_of_replicas": 0
 			}
-		}`)
+		}
+	}`)
 
 	_, err := client.Indices.Create(
 		ctx,
