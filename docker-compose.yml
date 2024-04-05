@@ -1,8 +1,8 @@
 version: '2'
 
 volumes:
-  solr-7-data:
   solr-8-data:
+  solr-9-data:
   opensearch-2-data:
   scratch:
 
@@ -111,6 +111,19 @@ services:
      - "8983"
     volumes:
       - solr-8-data:/var/solr
+    command:
+      - solr-precreate
+      - mycore
+
+  solr-9:
+    image: testlagoon/solr-9:pr-963
+    labels:
+      lagoon.type: solr
+      lagoon.persistent.size: 100Mi
+    ports:
+     - "8983"
+    volumes:
+      - solr-9-data:/var/solr
     command:
       - solr-precreate
       - mycore
