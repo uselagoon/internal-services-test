@@ -57,7 +57,7 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/opensearch?ser
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/opensearch?service=opensearch-2" | grep "LAGOON_TEST_VAR=internal-services-test"
 
 # mongo-4 should be able to read/write data
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mongo?service=mongo-4" | grep "SERVICE_HOST="
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mongo?service=mongo-4" | grep "SERVICE_HOST=mongo-4"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mongo?service=mongo-4" | grep "LAGOON_TEST_VAR=internal-services-test"
 
 # redis-6 should be able to read/write data
@@ -75,6 +75,9 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/solr?service=s
 # persistent storage should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/storage?path=/app/files" | grep "STORAGE_PATH=/app/files/storage.txt"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/storage?path=/app/files" | grep "LAGOON_TEST_VAR=internal-services-test"
+
+# Incorrect service should be caught & error output
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?service=incorrect-service" | grep "mariadb is not a compatible driver with service: incorrect-service"
 ```
 
 Destroy tests
