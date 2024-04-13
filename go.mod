@@ -10,7 +10,7 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/uselagoon/machinery v0.0.18
 	github.com/vanng822/go-solr v0.10.0
-	go.mongodb.org/mongo-driver v1.14.0
+	go.mongodb.org/mongo-driver v1.15.0
 )
 
 require (
