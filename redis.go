@@ -19,6 +19,7 @@ func redisHandler(w http.ResponseWriter, r *http.Request) {
 	service := r.URL.Query().Get("service")
 	redisRoute := strings.ReplaceAll(service, "/", "")
 	redisConnectionStr := fmt.Sprintf("%s:6379", redisRoute)
+	log.Print(fmt.Sprintf("Using %s as the connstring", redisConnectionStr))
 	fmt.Fprintf(w, redisConnector(redisConnectionStr, redisRoute))
 }
 
@@ -35,6 +36,10 @@ func redisConnector(connectionString string, version string) string {
 		Password: "",
 		DB:       0,
 	})
+
+	if err := client.Ping(ctx).Err(); err != nil {
+		panic(err)
+	}
 
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
