@@ -25,8 +25,8 @@ Run the following commands to validate things are rolling as they should.
 # Ensure services are ready to connect
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://mariadb-10-5:3306 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://mariadb-10-11:3306 -timeout 1m
-docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://postgres-11:5432 -timeout 1m
-docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://postgres-15:5432 -timeout 1m
+docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://postgres-12:5432 -timeout 1m
+docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://postgres-16:5432 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://opensearch-2:9200 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://mongo-4:27017 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://redis-6:6379 -timeout 1m
@@ -45,13 +45,13 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?servic
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?service=mariadb-10-11" | grep "SERVICE_HOST=10.11"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?service=mariadb-10-11" | grep "LAGOON_TEST_VAR=internal-services-test"
 
-# postgres-11 should be able to read/write data
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-11" | grep "SERVICE_HOST=PostgreSQL 11"
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-11" | grep "LAGOON_TEST_VAR=internal-services-test"
+# postgres-12 should be able to read/write data
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-12" | grep "SERVICE_HOST=PostgreSQL 12"
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-12" | grep "LAGOON_TEST_VAR=internal-services-test"
 
-# postgres-15 should be able to read/write data
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-15" | grep "SERVICE_HOST=PostgreSQL 15"
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-15" | grep "LAGOON_TEST_VAR=internal-services-test"
+# postgres-16 should be able to read/write data
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-16" | grep "SERVICE_HOST=PostgreSQL 16"
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-16" | grep "LAGOON_TEST_VAR=internal-services-test"
 
 # opensearch-2 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/opensearch?service=opensearch-2" | grep "SERVICE_HOST=opensearch-2"

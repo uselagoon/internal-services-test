@@ -42,16 +42,16 @@ services:
     ports:
       - '3306'
 
-  postgres-11:
-    image: uselagoon/postgres-11:latest
+  postgres-12:
+    image: uselagoon/postgres-12:latest
     labels:
       lagoon.type: postgres-single
       lagoon.persistent.size: 100Mi
     ports:
       - '5432'
 
-  postgres-15:
-    image: uselagoon/postgres-15:latest
+  postgres-16:
+    image: uselagoon/postgres-16:latest
     labels:
       lagoon.type: postgres
     ports:
@@ -116,7 +116,7 @@ services:
       - mycore
 
   solr-9:
-    image: testlagoon/solr-9:pr-963
+    image: uselagoon/solr-9:latest
     labels:
       lagoon.type: solr
       lagoon.persistent.size: 100Mi
