@@ -2,15 +2,28 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"fmt"
-	"github.com/gorilla/mux"
+	"html/template"
 	"log"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
+
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
+	"github.com/gorilla/mux"
 )
 
-type funcType func() map[string]string
+type LandingPageData struct {
+	Services []Service
+}
+
+type Service struct {
+	Type string
+	Name string
+}
 
 func main() {
 	r := mux.NewRouter()
@@ -42,10 +55,49 @@ func handler(m *mux.Router) http.HandlerFunc {
 	}
 }
 
+func getServices() []Service {
+	c, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer c.Close()
+
+	containers, err := c.ContainerList(context.Background(), container.ListOptions{All: true})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var serviceList []Service
+	serviceRegexp := regexp.MustCompile(`/internal-services-test_(.*?)_1`)
+	typeRegexp := regexp.MustCompile(`(\w*)-.*`)
+	for _, ctr := range containers {
+		for _, name := range ctr.Names {
+			if strings.Contains(name, "internal-services-test") && !strings.Contains(name, "commons") {
+				serviceName := serviceRegexp.FindStringSubmatch(name)
+				serviceType := typeRegexp.FindStringSubmatch(serviceName[1])
+				serviceList = append(serviceList, Service{Type: serviceType[1], Name: serviceName[1]})
+			}
+		}
+	}
+
+	return serviceList
+}
+
 func handleReq(w http.ResponseWriter, r *http.Request) {
-	var funcToCall []funcType
-	for _, conFunc := range funcToCall {
-		fmt.Fprintf(w, dbConnectorPairs(conFunc(), ""))
+	tmpl, err := template.ParseFiles("landingTemplate.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	serviceList := getServices()
+	data := LandingPageData{
+		Services: serviceList,
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
