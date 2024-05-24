@@ -4,7 +4,7 @@
 <head>
   <title>Internal Services Test</title>
 </head>
-<body>
+<body style="background: black;font-family: monospace;color: white;">
 <h1>Internal Services Test</h1>
 <p>This project was designed to perform a functional test on a given native Lagoon service.</p>
 <p>It works by:</p>
@@ -14,6 +14,7 @@
   <li>Returning the result of the test</li>
 </ul>
 <p>To check a service, use this format <mark>http://0.0.0.0:3000/{service-type}?service={service-name}</mark></p>
+<h2>Available Services:</h2>
 <ul>
   {{range .Services}}
   <li><a href="/{{.Type}}?service={{.Name}}">{{.Name}}</a></li>
