@@ -1,8 +1,8 @@
 version: '2'
 
 volumes:
-  solr-7-data:
   solr-8-data:
+  solr-9-data:
   opensearch-2-data:
   scratch:
 
@@ -13,6 +13,9 @@ services:
       dockerfile: Dockerfile
     labels:
       lagoon.type: basic-persistent
+      lagoon.persistent: /app/files
+      lagoon.persistent.size: 10Mi
+      lagoon.persistent.class: bulk
     ports:
       - '3000:3000'
     container_name: go-web
@@ -28,6 +31,7 @@ services:
     image: uselagoon/mariadb-10.5:latest
     labels:
       lagoon.type: mariadb-single
+      lagoon.persistent.size: 100Mi
     ports:
       - '3306'
 
@@ -38,15 +42,16 @@ services:
     ports:
       - '3306'
 
-  postgres-11:
-    image: uselagoon/postgres-11:latest
+  postgres-12:
+    image: uselagoon/postgres-12:latest
     labels:
       lagoon.type: postgres-single
+      lagoon.persistent.size: 100Mi
     ports:
       - '5432'
 
-  postgres-15:
-    image: uselagoon/postgres-15:latest
+  postgres-16:
+    image: uselagoon/postgres-16:latest
     labels:
       lagoon.type: postgres
     ports:
@@ -86,6 +91,7 @@ services:
       - opensearch-2-data:/usr/share/opensearch/data
     labels:
       lagoon.type: opensearch
+      lagoon.persistent.size: 100Mi
     ports:
       - '9200'
 
@@ -110,26 +116,28 @@ services:
     ports:
       - '6379'
 
-  solr-7:
-    image: uselagoon/solr-7:latest
-    labels:
-      lagoon.type: solr
-    ports:
-     - "8983"
-    volumes:
-      - solr-7-data:/var/solr
-    command:
-      - solr-precreate
-      - mycore
-
   solr-8:
     image: uselagoon/solr-8:latest
     labels:
       lagoon.type: solr
+      lagoon.persistent.size: 100Mi
     ports:
      - "8983"
     volumes:
       - solr-8-data:/var/solr
+    command:
+      - solr-precreate
+      - mycore
+
+  solr-9:
+    image: uselagoon/solr-9:latest
+    labels:
+      lagoon.type: solr
+      lagoon.persistent.size: 100Mi
+    ports:
+     - "8983"
+    volumes:
+      - solr-9-data:/var/solr
     command:
       - solr-precreate
       - mycore

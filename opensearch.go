@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -12,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/opensearch-project/opensearch-go/v2"
-	"github.com/opensearch-project/opensearch-go/v2/opensearchapi"
+	"github.com/opensearch-project/opensearch-go/v4"
+	"github.com/opensearch-project/opensearch-go/v4/opensearchapi"
 )
 
 var (
@@ -28,9 +27,10 @@ func opensearchHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, opensearchConnector(opensearchConnectionStr))
 }
 
-func cleanOpensearchOutput(sr *opensearchapi.Response) string {
+func cleanOpensearchOutput(sr *opensearchapi.SearchResp) string {
 	var mp map[string]interface{}
-	err := json.NewDecoder(sr.Body).Decode(&mp)
+	response := sr.Inspect().Response
+	err := json.NewDecoder(response.Body).Decode(&mp)
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -55,19 +55,25 @@ func cleanOpensearchOutput(sr *opensearchapi.Response) string {
 	return opensearchOutput
 }
 
-func createOpensearchIndexDocument(client *opensearch.Client) {
+func createOpensearchIndexDocument(client *opensearchapi.Client) {
 	settings := strings.NewReader(`{
-		'settings': {
-			'index': {
-				'number_of_shards': 1,
-				'number_of_replicas': 0
-				}
+		"settings": {
+			"index": {
+				"number_of_shards": 1,
+				"number_of_replicas": 0
 			}
-		}`)
+		}
+	}`)
 
-	_ = opensearchapi.IndicesCreateRequest{
-		Index: "opensearch-test",
-		Body:  settings,
+	_, err := client.Indices.Create(
+		ctx,
+		opensearchapi.IndicesCreateReq{
+			Index: "opensearch-test",
+			Body:  settings,
+		},
+	)
+	if err != nil {
+		log.Println(err)
 	}
 
 	m := make(map[string]string)
@@ -81,12 +87,13 @@ func createOpensearchIndexDocument(client *opensearch.Client) {
 	reqDoc := strings.NewReader(string(jsonD))
 
 	docId := "1"
-	req := opensearchapi.IndexRequest{
-		Index:      "opensearch-test",
-		DocumentID: docId,
-		Body:       reqDoc,
-	}
-	_, err := req.Do(context.Background(), client)
+	_, err = client.Index(
+		ctx,
+		opensearchapi.IndexReq{
+			Index:      "opensearch-test",
+			DocumentID: docId,
+			Body:       reqDoc,
+		})
 	if err != nil {
 		log.Println(err)
 	}
@@ -94,11 +101,13 @@ func createOpensearchIndexDocument(client *opensearch.Client) {
 }
 
 func opensearchConnector(connectionString string) string {
-	client, _ := opensearch.NewClient(opensearch.Config{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	client, _ := opensearchapi.NewClient(opensearchapi.Config{
+		Client: opensearch.Config{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
+			Addresses: []string{connectionString},
 		},
-		Addresses: []string{connectionString},
 	})
 
 	createOpensearchIndexDocument(client)
@@ -110,12 +119,15 @@ func opensearchConnector(connectionString string) string {
 		}
 	}`)
 
-	searchReq := &opensearchapi.SearchRequest{
-		Index: []string{"opensearch-test"},
-		Body:  content,
+	searchResponse, err := client.Search(
+		ctx, &opensearchapi.SearchReq{
+			Indices: []string{"opensearch-test"},
+			Body:    content,
+		})
+	if err != nil {
+		log.Println(err)
 	}
 
-	searchResponse, _ := searchReq.Do(context.Background(), client)
 	openSearchResults := cleanOpensearchOutput(searchResponse)
 	return openSearchResults
 }

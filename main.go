@@ -25,14 +25,19 @@ func main() {
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 
-	log.Fatal(http.ListenAndServe(":3000", timeoutHandler(r)))
+	log.Fatal(http.ListenAndServe(":3000", handler(r)))
 }
 
-func timeoutHandler(m *mux.Router) http.HandlerFunc {
+func handler(m *mux.Router) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		driver := strings.ReplaceAll(r.URL.Path, "/", "")
 		service := r.URL.Query().Get("service")
 		incompatibleError := fmt.Sprintf("%s is not a compatible driver with service: %s", driver, service)
+		defer func() {
+			if err := recover(); err != nil {
+				http.Error(w, incompatibleError, http.StatusInternalServerError)
+			}
+		}()
 		timeoutHandler := http.TimeoutHandler(m, 3*time.Second, incompatibleError)
 		timeoutHandler.ServeHTTP(w, r)
 	}
