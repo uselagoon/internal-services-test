@@ -21,7 +21,7 @@ func main() {
 	r.HandleFunc("/mongo", mongoHandler)
 	r.HandleFunc("/opensearch", opensearchHandler)
 	r.HandleFunc("/storage", persistentStorageHandler)
-	r.HandleFunc("/mysql", mysqlHandler)
+	r.HandleFunc("/mysql", mariadbHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 

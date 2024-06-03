@@ -57,15 +57,15 @@ services:
     ports:
       - '5432'
 
-  mysql-5-7:
-    image: testlagoon/mysql-5.7:experimental
+  mysql-8-0:
+    image: testlagoon/mysql-8.0:experimental
     labels:
       lagoon.type: mariadb
     ports:
       - "3306"
 
-  mysql-8-0:
-    image: testlagoon/mysql-8.0:experimental
+  mysql-8-4:
+    image: testlagoon/mysql-8.4:pr-308 # Placeholder
     labels:
       lagoon.type: mariadb
     ports:

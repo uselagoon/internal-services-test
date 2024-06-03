@@ -45,6 +45,14 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?servic
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?service=mariadb-10-11" | grep "SERVICE_HOST=10.11"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?service=mariadb-10-11" | grep "LAGOON_TEST_VAR=internal-services-test"
 
+# mysql-8-0 should be able to read/write data
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mysql?service=mysql-8-0" | grep "SERVICE_HOST=8.0.34"
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mysql?service=mysql-8-0" | grep "LAGOON_TEST_VAR=internal-services-test"
+
+# mysql-8-4 should be able to read/write data
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mysql?service=mysql-8-4" | grep "SERVICE_HOST=8.4.0"
+docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mysql?service=mysql-8-4" | grep "LAGOON_TEST_VAR=internal-services-test"
+
 # postgres-12 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-12" | grep "SERVICE_HOST=PostgreSQL 12"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/postgres?service=postgres-12" | grep "LAGOON_TEST_VAR=internal-services-test"
