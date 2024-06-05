@@ -58,7 +58,7 @@ services:
       - '5432'
 
   mysql-8-0:
-    image: testlagoon/mysql-8.0:experimental
+    image: testlagoon/mysql-8.0:pr-308
     labels:
       lagoon.type: mariadb
     ports:
