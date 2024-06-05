@@ -21,6 +21,7 @@ func main() {
 	r.HandleFunc("/mongo", mongoHandler)
 	r.HandleFunc("/opensearch", opensearchHandler)
 	r.HandleFunc("/storage", persistentStorageHandler)
+	r.HandleFunc("/mysql", mariadbHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 
@@ -72,7 +73,7 @@ func connectorKeyValues(values []string) string {
 
 func cleanRoute(basePath string) (string, string) {
 	cleanRoute := strings.ReplaceAll(basePath, "/", "")
-	localService := strings.ReplaceAll(cleanRoute, "10.", "10-")
+	localService := strings.ReplaceAll(cleanRoute, ".", "-")
 	replaceHyphen := strings.ReplaceAll(localService, "-", "_")
 	lagoonService := strings.ToUpper(replaceHyphen)
 	return localService, lagoonService
