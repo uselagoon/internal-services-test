@@ -25,6 +25,7 @@ Run the following commands to validate things are rolling as they should.
 # Ensure services are ready to connect
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://mariadb-10-5:3306 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://mariadb-10-11:3306 -timeout 1m
+docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://mysql-8-4:3306 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://postgres-12:5432 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://postgres-16:5432 -timeout 1m
 docker run --rm --net internal-services-test_default jwilder/dockerize dockerize -wait tcp://opensearch-2:9200 -timeout 1m
@@ -44,10 +45,6 @@ docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?servic
 # mariadb-10-11 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?service=mariadb-10-11" | grep "SERVICE_HOST=10.11"
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mariadb?service=mariadb-10-11" | grep "LAGOON_TEST_VAR=internal-services-test"
-
-# mysql-8-0 should be able to read/write data
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mysql?service=mysql-8-0" | grep "SERVICE_HOST=8.0"
-docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mysql?service=mysql-8-0" | grep "LAGOON_TEST_VAR=internal-services-test"
 
 # mysql-8-4 should be able to read/write data
 docker compose exec -T commons sh -c "curl -kL http://go-web:3000/mysql?service=mysql-8-4" | grep "SERVICE_HOST=8.4"
