@@ -58,6 +58,13 @@ services:
     ports:
       - '5432'
 
+  mysql-8-4:
+    image: uselagoon/mysql-8.4:latest
+    labels:
+      lagoon.type: mariadb-single
+    ports:
+      - "3306"
+
   opensearch-2:
     image: uselagoon/opensearch-2:latest
     environment:

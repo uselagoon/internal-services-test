@@ -7,11 +7,11 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
-	github.com/opensearch-project/opensearch-go/v4 v4.0.0
-	github.com/redis/go-redis/v9 v9.5.1
-	github.com/uselagoon/machinery v0.0.21
+	github.com/opensearch-project/opensearch-go/v4 v4.1.0
+	github.com/redis/go-redis/v9 v9.5.3
+	github.com/uselagoon/machinery v0.0.22
 	github.com/vanng822/go-solr v0.10.0
-	go.mongodb.org/mongo-driver v1.15.0
+	go.mongodb.org/mongo-driver v1.16.0
 )
 
 require (
@@ -46,8 +46,8 @@ require (
 	go.opentelemetry.io/otel/metric v1.27.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.27.0 // indirect
 	go.opentelemetry.io/otel/trace v1.27.0 // indirect
-	golang.org/x/crypto v0.19.0 // indirect
-	golang.org/x/sync v0.5.0 // indirect
+	golang.org/x/crypto v0.22.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
