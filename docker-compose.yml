@@ -97,7 +97,7 @@ services:
   redis-6:
     image: uselagoon/redis-6-persistent:latest
     labels:
-      lagoon.type: redis
+      lagoon.type: redis-persistent
       lagoon.persistent.size: 100Mi
     ports:
       - '6379'
