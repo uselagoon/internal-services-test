@@ -1,6 +1,5 @@
-version: '2'
-
 volumes:
+  redis-6-data:
   solr-8-data:
   solr-9-data:
   opensearch-2-data:
@@ -97,14 +96,17 @@ services:
       - '27017'
 
   redis-6:
-    image: uselagoon/redis-5:latest
+    image: uselagoon/redis-6-persistent:latest
     labels:
-      lagoon.type: redis
+      lagoon.type: redis-persistent
+      lagoon.persistent.size: 100Mi
     ports:
       - '6379'
+    volumes:
+      - redis-6-data:/data
 
   redis-7:
-    image: uselagoon/redis-6:latest
+    image: uselagoon/redis-7:latest
     labels:
       lagoon.type: redis
     ports:

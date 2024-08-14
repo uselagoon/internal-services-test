@@ -8,10 +8,10 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 	github.com/opensearch-project/opensearch-go/v4 v4.1.0
-	github.com/redis/go-redis/v9 v9.5.3
-	github.com/uselagoon/machinery v0.0.22
+	github.com/redis/go-redis/v9 v9.6.1
+	github.com/uselagoon/machinery v0.0.29
 	github.com/vanng822/go-solr v0.10.0
-	go.mongodb.org/mongo-driver v1.16.0
+	go.mongodb.org/mongo-driver v1.16.1
 )
 
 require (
