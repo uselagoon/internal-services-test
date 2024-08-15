@@ -2,17 +2,16 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
 	"github.com/gorilla/mux"
 )
 
@@ -41,6 +40,48 @@ func main() {
 	log.Fatal(http.ListenAndServe(":3000", handler(r)))
 }
 
+// getServices Parses docker-compose.yml and returns a list of services
+func getServices() []Service {
+	type BuildConfig struct {
+		Context    string `yaml:"context,omitempty"`
+		Dockerfile string `yaml:"dockerfile,omitempty"`
+	}
+
+	type ServiceConfig struct {
+		Image   string            `yaml:"image,omitempty"`
+		Labels  map[string]string `yaml:"labels,omitempty"`
+		Build   BuildConfig       `yaml:"build,omitempty"`
+		Ports   []string          `yaml:"ports,omitempty"`
+		Volumes []string          `yaml:"volumes,omitempty"`
+	}
+
+	type DockerCompose struct {
+		Services map[string]ServiceConfig `yaml:"services"`
+		Volumes  map[string]interface{}   `yaml:"volumes,omitempty"`
+	}
+
+	compose := &DockerCompose{}
+	data, err := os.ReadFile("docker-compose.yml")
+	if err != nil {
+		log.Fatalf("Error reading docker-compose.yml: %v", err)
+	}
+
+	err = yaml.Unmarshal(data, compose)
+	if err != nil {
+		log.Fatalf("Error parsing docker-compose.yml: %v", err)
+	}
+
+	var serviceList []Service
+	typeRegexp := regexp.MustCompile(`^\w*`)
+	for service := range compose.Services {
+		if service != "web" {
+			serviceType := typeRegexp.FindString(service)
+			serviceList = append(serviceList, Service{Type: serviceType, Name: service})
+		}
+	}
+	return serviceList
+}
+
 func handler(m *mux.Router) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		driver := strings.ReplaceAll(r.URL.Path, "/", "")
@@ -54,34 +95,6 @@ func handler(m *mux.Router) http.HandlerFunc {
 		timeoutHandler := http.TimeoutHandler(m, 3*time.Second, incompatibleError)
 		timeoutHandler.ServeHTTP(w, r)
 	}
-}
-
-func getServices() []Service {
-	c, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer c.Close()
-
-	containers, err := c.ContainerList(context.Background(), container.ListOptions{All: true})
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var serviceList []Service
-	serviceRegexp := regexp.MustCompile(`/internal-services-test_(.*?)_1`)
-	typeRegexp := regexp.MustCompile(`(\w*)-.*`)
-	for _, ctr := range containers {
-		for _, name := range ctr.Names {
-			if strings.Contains(name, "internal-services-test") && !strings.Contains(name, "commons") {
-				serviceName := serviceRegexp.FindStringSubmatch(name)
-				serviceType := typeRegexp.FindStringSubmatch(serviceName[1])
-				serviceList = append(serviceList, Service{Type: serviceType[1], Name: serviceName[1]})
-			}
-		}
-	}
-
-	return serviceList
 }
 
 func handleReq(w http.ResponseWriter, r *http.Request) {
