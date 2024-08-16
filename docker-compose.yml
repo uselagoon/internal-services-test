@@ -2,7 +2,7 @@ volumes:
   redis-5-data:
   solr-7-data:
   solr-8-data:
-  opensearch-2-data:
+  elasticsearch-6-data:
   scratch:
 
 services:
@@ -25,6 +25,7 @@ services:
       - STORAGE_LOCATION=/app/files
     volumes:
       - scratch:/app/files
+      - ./docker-compose.yml:/app/docker-compose.yml
       - /var/run/docker.sock:/var/run/docker.sock
 
   mariadb-10-2:
@@ -35,10 +36,10 @@ services:
     ports:
       - '3306'
 
-  mariadb-10-11:
-    image: amazeeio/mariadb:10.11
+  mariadb-10-g:
+    image: amazeeio/mariadb-galera:latest
     labels:
-      lagoon.type: mariadb
+      lagoon.type: mariadb-single
     ports:
       - '3306'
 
@@ -64,15 +65,12 @@ services:
     ports:
       - "3306"
 
-  opensearch-2:
-    image: amazeeio/elasticsearch:7.1-latest
+  elasticsearch-6:
+    image: amazeeio/elasticsearch:6-latest
     environment:
-    - cluster.name=opensearch-cluster
-    - node.name=opensearch-2
-    - discovery.seed_hosts=opensearch-2
-    - cluster.initial_cluster_manager_nodes=opensearch-2
+    - cluster.name=elasticsearch-cluster
     - bootstrap.memory_lock=true
-    - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    - "ELASTICSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
@@ -81,9 +79,9 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      - opensearch-2-data:/usr/share/opensearch/data
+      - elasticsearch-6-data:/usr/share/elasticsearch/data
     labels:
-      lagoon.type: opensearch
+      lagoon.type: elasticsearch
       lagoon.persistent.size: 100Mi
     ports:
       - '9200'
