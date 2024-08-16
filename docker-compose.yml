@@ -1,7 +1,7 @@
 volumes:
-  redis-6-data:
+  redis-5-data:
+  solr-7-data:
   solr-8-data:
-  solr-9-data:
   opensearch-2-data:
   scratch:
 
@@ -16,7 +16,7 @@ services:
       lagoon.persistent.size: 10Mi
       lagoon.persistent.class: bulk
     ports:
-      - '3000:3000'
+      - '3003:3000'
     container_name: go-web
     environment:
       - LAGOON_TEST_VAR=internal-services-test
@@ -27,8 +27,8 @@ services:
       - scratch:/app/files
       - /var/run/docker.sock:/var/run/docker.sock
 
-  mariadb-10-5:
-    image: uselagoon/mariadb-10.5:latest
+  mariadb-10-2:
+    image: amazeeio/mariadb:v0.21.0
     labels:
       lagoon.type: mariadb-single
       lagoon.persistent.size: 100Mi
@@ -36,7 +36,7 @@ services:
       - '3306'
 
   mariadb-10-11:
-    image: uselagoon/mariadb-10.11:latest
+    image: amazeeio/mariadb:10.11
     labels:
       lagoon.type: mariadb
     ports:
@@ -58,14 +58,14 @@ services:
       - '5432'
 
   mysql-8-4:
-    image: uselagoon/mysql-8.4:latest
+    image: amazeeio/mysql:8.4-24.6.0
     labels:
       lagoon.type: mariadb-single
     ports:
       - "3306"
 
   opensearch-2:
-    image: uselagoon/opensearch-2:latest
+    image: amazeeio/elasticsearch:7.1-latest
     environment:
     - cluster.name=opensearch-cluster
     - node.name=opensearch-2
@@ -89,31 +89,44 @@ services:
       - '9200'
 
   mongo-4:
-    image: uselagoon/mongo-4:latest
+    image: amazeeio/mongo:4
     labels:
       lagoon.type: mongo
     ports:
       - '27017'
 
-  redis-6:
-    image: uselagoon/redis-6-persistent:latest
+  redis-5:
+    image: amazeeio/redis-persistent:latest
     labels:
       lagoon.type: redis-persistent
       lagoon.persistent.size: 100Mi
     ports:
       - '6379'
     volumes:
-      - redis-6-data:/data
+      - redis-5-data:/data
 
-  redis-7:
-    image: uselagoon/redis-7:latest
+  redis-6:
+    image: amazeeio/redis:6
     labels:
       lagoon.type: redis
     ports:
       - '6379'
 
+  solr-7:
+    image: amazeeio/solr:7-21.10.0
+    labels:
+      lagoon.type: solr
+      lagoon.persistent.size: 100Mi
+    ports:
+     - "8983"
+    volumes:
+      - solr-7-data:/var/solr
+    command:
+      - solr-precreate
+      - mycore
+
   solr-8:
-    image: uselagoon/solr-8:latest
+    image: amazeeio/solr:8-21.12.0
     labels:
       lagoon.type: solr
       lagoon.persistent.size: 100Mi
@@ -121,19 +134,6 @@ services:
      - "8983"
     volumes:
       - solr-8-data:/var/solr
-    command:
-      - solr-precreate
-      - mycore
-
-  solr-9:
-    image: uselagoon/solr-9:latest
-    labels:
-      lagoon.type: solr
-      lagoon.persistent.size: 100Mi
-    ports:
-     - "8983"
-    volumes:
-      - solr-9-data:/var/solr
     command:
       - solr-precreate
       - mycore
