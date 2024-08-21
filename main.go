@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/gorilla/mux"
+	machinery "github.com/uselagoon/machinery/utils/variables"
 	"gopkg.in/yaml.v3"
 	"html/template"
 	"log"
@@ -11,8 +13,6 @@ import (
 	"regexp"
 	"strings"
 	"time"
-
-	"github.com/gorilla/mux"
 )
 
 type LandingPageData struct {
@@ -79,6 +79,11 @@ func getServices() []Service {
 			serviceList = append(serviceList, Service{Type: serviceType, Name: service})
 		}
 	}
+	storage := machinery.GetEnv("STORAGE_LOCATION", "")
+	if storage != "" {
+		serviceList = append(serviceList, Service{Type: "storage", Name: storage})
+	}
+
 	return serviceList
 }
 

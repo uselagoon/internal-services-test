@@ -17,7 +17,11 @@
 <h2>Available Services:</h2>
 <ul>
   {{range .Services}}
-  <li><a href="/{{.Type}}?service={{.Name}}">{{.Name}}</a></li>
+    {{if (eq .Type "storage")}}
+    <li><a href="/{{.Type}}?path={{.Name}}">storage:{{.Name}}</a></li>
+    {{else}}
+    <li><a href="/{{.Type}}?service={{.Name}}">{{.Name}}</a></li>
+    {{end}}
   {{end}}
 </ul>
 </body>
