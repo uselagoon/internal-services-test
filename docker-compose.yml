@@ -124,7 +124,9 @@ services:
       - mycore
 
   solr-8:
-    image: amazeeio/solr:8-21.12.0
+    build:
+      context: .
+      dockerfile: solr.Dockerfile
     labels:
       lagoon.type: solr
       lagoon.persistent.size: 100Mi
