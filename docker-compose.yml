@@ -25,6 +25,7 @@ services:
       - STORAGE_LOCATION=/app/files
     volumes:
       - scratch:/app/files
+      - /var/run/docker.sock:/var/run/docker.sock
 
   mariadb-10-5:
     image: uselagoon/mariadb-10.5:latest

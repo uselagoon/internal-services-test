@@ -4,13 +4,25 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gorilla/mux"
+	machinery "github.com/uselagoon/machinery/utils/variables"
+	"gopkg.in/yaml.v3"
+	"html/template"
 	"log"
 	"net/http"
+	"os"
+	"regexp"
 	"strings"
 	"time"
 )
 
-type funcType func() map[string]string
+type LandingPageData struct {
+	Services []Service
+}
+
+type Service struct {
+	Type string
+	Name string
+}
 
 func main() {
 	r := mux.NewRouter()
@@ -26,6 +38,53 @@ func main() {
 	http.Handle("/", r)
 
 	log.Fatal(http.ListenAndServe(":3000", handler(r)))
+}
+
+// getServices Parses docker-compose.yml and returns a list of services
+func getServices() []Service {
+	type BuildConfig struct {
+		Context    string `yaml:"context,omitempty"`
+		Dockerfile string `yaml:"dockerfile,omitempty"`
+	}
+
+	type ServiceConfig struct {
+		Image   string            `yaml:"image,omitempty"`
+		Labels  map[string]string `yaml:"labels,omitempty"`
+		Build   BuildConfig       `yaml:"build,omitempty"`
+		Ports   []string          `yaml:"ports,omitempty"`
+		Volumes []string          `yaml:"volumes,omitempty"`
+	}
+
+	type DockerCompose struct {
+		Services map[string]ServiceConfig `yaml:"services"`
+		Volumes  map[string]interface{}   `yaml:"volumes,omitempty"`
+	}
+
+	compose := &DockerCompose{}
+	data, err := os.ReadFile("docker-compose.yml")
+	if err != nil {
+		log.Fatalf("Error reading docker-compose.yml: %v", err)
+	}
+
+	err = yaml.Unmarshal(data, compose)
+	if err != nil {
+		log.Fatalf("Error parsing docker-compose.yml: %v", err)
+	}
+
+	var serviceList []Service
+	typeRegexp := regexp.MustCompile(`^\w*`)
+	for service := range compose.Services {
+		if service != "web" {
+			serviceType := typeRegexp.FindString(service)
+			serviceList = append(serviceList, Service{Type: serviceType, Name: service})
+		}
+	}
+	storage := machinery.GetEnv("STORAGE_LOCATION", "")
+	if storage != "" {
+		serviceList = append(serviceList, Service{Type: "storage", Name: storage})
+	}
+
+	return serviceList
 }
 
 func handler(m *mux.Router) http.HandlerFunc {
@@ -44,9 +103,20 @@ func handler(m *mux.Router) http.HandlerFunc {
 }
 
 func handleReq(w http.ResponseWriter, r *http.Request) {
-	var funcToCall []funcType
-	for _, conFunc := range funcToCall {
-		fmt.Fprintf(w, dbConnectorPairs(conFunc(), ""))
+	tmpl, err := template.ParseFiles("landingTemplate.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	serviceList := getServices()
+	data := LandingPageData{
+		Services: serviceList,
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
