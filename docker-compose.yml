@@ -52,7 +52,8 @@ services:
   postgres-16:
     image: uselagoon/postgres-16:latest
     labels:
-      lagoon.type: postgres
+      lagoon.type: basic-single
+      lagoon.service.port: 5432
     ports:
       - '5432'
 
