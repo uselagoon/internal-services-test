@@ -53,6 +53,8 @@ services:
     image: uselagoon/postgres-16:latest
     labels:
       lagoon.type: basic-single
+      lagoon.persistent: /var/lib/postgresql/data
+      lagoon.persistent.size: 100Mi
       lagoon.service.port: 5432
     ports:
       - '5432'
