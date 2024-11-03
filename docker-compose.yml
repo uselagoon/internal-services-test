@@ -111,6 +111,13 @@ services:
     ports:
       - '6379'
 
+  valkey-8:
+    image: uselagoon/valkey-8:latest
+    labels:
+      lagoon.type: redis
+    ports:
+      - '6379'
+
   solr-8:
     image: uselagoon/solr-8:latest
     labels:
