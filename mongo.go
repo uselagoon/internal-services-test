@@ -11,10 +11,9 @@ import (
 	"regexp"
 	"strings"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 var (
@@ -44,16 +43,14 @@ func mongoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, mongoConnector(mongoConnectionStr, database))
 }
 
-func cleanMongoOutput(docs []primitive.M) string {
+func cleanMongoOutput(docs []bson.M) string {
 	valStr := fmt.Sprint(docs)
-	r := regexp.MustCompile(`(?:LAGOON_\w*)\s\w*:(?:[^\[\]\)\(]*)`)
-	matches := r.FindAllString(valStr, -1)
+	r := regexp.MustCompile(`"Key":"(LAGOON_\w+)","value":"([^"]+)"`)
+	matches := r.FindAllStringSubmatch(valStr, -1)
 	var mongoResults []string
 	for _, str := range matches {
-		mongoVals := strings.ReplaceAll(str, "value:", "")
-		mongoResults = append(mongoResults, mongoVals)
+		mongoResults = append(mongoResults, fmt.Sprintf("%s %s", str[1], str[2]))
 	}
-
 	b := new(bytes.Buffer)
 	for _, value := range mongoResults {
 		v := strings.SplitN(value, " ", 2)
@@ -65,7 +62,7 @@ func cleanMongoOutput(docs []primitive.M) string {
 }
 
 func mongoConnector(connectionString string, database string) string {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(connectionString))
+	client, err := mongo.Connect(options.Client().ApplyURI(connectionString))
 	if err != nil {
 		log.Print(err)
 	}
@@ -93,13 +90,12 @@ func mongoConnector(connectionString string, database string) string {
 	if err != nil {
 		log.Print(err)
 	}
-	filter := bson.D{{Key: "Key", Value: primitive.Regex{Pattern: "LAGOON", Options: ""}}}
+	filter := bson.D{{Key: "Key", Value: bson.Regex{Pattern: "LAGOON", Options: ""}}}
 	cursor, _ := envCollection.Find(context.TODO(), filter, options.Find().SetProjection(bson.M{"_id": 0}))
 	var docs []bson.M
 	if err = cursor.All(context.TODO(), &docs); err != nil {
 		log.Print(err)
 	}
-
 	mongoOutput := cleanMongoOutput(docs)
 	return mongoOutput
 }
