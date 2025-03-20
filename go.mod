@@ -7,7 +7,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 	github.com/opensearch-project/opensearch-go/v4 v4.4.0
-	github.com/redis/go-redis/v9 v9.7.1
+	github.com/redis/go-redis/v9 v9.7.3
 	github.com/uselagoon/machinery v0.0.33
 	github.com/vanng822/go-solr v0.10.0
 	go.mongodb.org/mongo-driver/v2 v2.1.0
