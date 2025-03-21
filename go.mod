@@ -3,7 +3,7 @@ module internal-services-test
 go 1.23
 
 require (
-	github.com/go-sql-driver/mysql v1.9.0
+	github.com/go-sql-driver/mysql v1.9.1
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 	github.com/opensearch-project/opensearch-go/v4 v4.4.0
