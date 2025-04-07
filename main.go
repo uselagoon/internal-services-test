@@ -3,11 +3,12 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 type funcType func() map[string]string
@@ -22,6 +23,7 @@ func main() {
 	r.HandleFunc("/opensearch", opensearchHandler)
 	r.HandleFunc("/storage", persistentStorageHandler)
 	r.HandleFunc("/mysql", mariadbHandler)
+	r.HandleFunc("/valkey", redisHandler)
 	r.HandleFunc("/", handleReq)
 	http.Handle("/", r)
 

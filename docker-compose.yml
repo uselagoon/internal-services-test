@@ -1,8 +1,8 @@
 volumes:
-  redis-6-data:
+  opensearch-2-data:
   solr-8-data:
   solr-9-data:
-  opensearch-2-data:
+  valkey-8-data:
   scratch:
 
 services:
@@ -26,8 +26,8 @@ services:
     volumes:
       - scratch:/app/files
 
-  mariadb-10-5:
-    image: uselagoon/mariadb-10.5:latest
+  mariadb-10-6:
+    image: uselagoon/mariadb-10.6:latest
     labels:
       lagoon.type: mariadb-single
       lagoon.persistent.size: 100Mi
@@ -41,16 +41,16 @@ services:
     ports:
       - '3306'
 
-  postgres-12:
-    image: uselagoon/postgres-12:latest
+  postgres-13:
+    image: uselagoon/postgres-13:latest
     labels:
       lagoon.type: postgres-single
       lagoon.persistent.size: 100Mi
     ports:
       - '5432'
 
-  postgres-16:
-    image: uselagoon/postgres-16:latest
+  postgres-17:
+    image: uselagoon/postgres-17:latest
     labels:
       lagoon.type: postgres
     ports:
@@ -94,16 +94,6 @@ services:
     ports:
       - '27017'
 
-  redis-6:
-    image: uselagoon/redis-6-persistent:latest
-    labels:
-      lagoon.type: redis-persistent
-      lagoon.persistent.size: 100Mi
-    ports:
-      - '6379'
-    volumes:
-      - redis-6-data:/data
-
   redis-7:
     image: uselagoon/redis-7:latest
     labels:
@@ -136,3 +126,15 @@ services:
     command:
       - solr-precreate
       - mycore
+
+  valkey-8:
+    image: uselagoon/valkey-8:latest
+    labels:
+      lagoon.type: valkey-persistent
+      lagoon.persistent.size: 100Mi
+    ports:
+      - '6379'
+    volumes:
+      - valkey-8-data:/data
+    environment:
+      - VALKEY_FLAVOR=persistent
