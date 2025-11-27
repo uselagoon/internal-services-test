@@ -15,7 +15,7 @@ func solrHandler(w http.ResponseWriter, r *http.Request) {
 	service := r.URL.Query().Get("service")
 	solrRoute := strings.ReplaceAll(service, "/", "")
 	solrConnectionStr := fmt.Sprintf("http://%s:8983/solr", solrRoute)
-	fmt.Fprintf(w, convertSolrDoc(solrConnector(solrConnectionStr), solrRoute))
+	fmt.Fprintf(w, "%s", convertSolrDoc(solrConnector(solrConnectionStr), solrRoute))
 }
 
 func convertSolrDoc(d []solr.Document, version string) string {

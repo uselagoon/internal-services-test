@@ -2,18 +2,19 @@ package main
 
 import (
 	"fmt"
-	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 )
 
 func persistentStorageHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Query().Get("path")
 	log.Print(fmt.Sprintf("Writing to %s", path))
-	fmt.Fprintf(w, persistentStorageConnector(path))
+	fmt.Fprintf(w, "%s", persistentStorageConnector(path))
 }
 
 func persistentStorageConnector(route string) string {

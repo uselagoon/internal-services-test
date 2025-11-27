@@ -1,8 +1,7 @@
 volumes:
-  opensearch-2-data:
-  solr-8-data:
+  opensearch-3-data:
   solr-9-data:
-  valkey-8-data:
+  valkey-9-data:
   scratch:
 
 services:
@@ -26,18 +25,18 @@ services:
     volumes:
       - scratch:/app/files
 
-  mariadb-10-6:
-    image: uselagoon/mariadb-10.6:latest
-    labels:
-      lagoon.type: mariadb-single
-      lagoon.persistent.size: 100Mi
-    ports:
-      - '3306'
-
   mariadb-10-11:
     image: uselagoon/mariadb-10.11:latest
     labels:
       lagoon.type: mariadb
+    ports:
+      - '3306'
+
+  mariadb-11-4:
+    image: uselagoon/mariadb-11.4:latest
+    labels:
+      lagoon.type: mariadb-single
+      lagoon.persistent.size: 100Mi
     ports:
       - '3306'
 
@@ -63,13 +62,13 @@ services:
     ports:
       - "3306"
 
-  opensearch-2:
-    image: uselagoon/opensearch-2:latest
+  opensearch-3:
+    image: uselagoon/opensearch-3:latest
     environment:
     - cluster.name=opensearch-cluster
-    - node.name=opensearch-2
-    - discovery.seed_hosts=opensearch-2
-    - cluster.initial_cluster_manager_nodes=opensearch-2
+    - node.name=opensearch-3
+    - discovery.seed_hosts=opensearch-3
+    - cluster.initial_cluster_manager_nodes=opensearch-3
     - bootstrap.memory_lock=true
     - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -80,7 +79,7 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      - opensearch-2-data:/usr/share/opensearch/data
+      - opensearch-3-data:/usr/share/opensearch/data
     labels:
       lagoon.type: opensearch
       lagoon.persistent.size: 100Mi
@@ -94,25 +93,12 @@ services:
     ports:
       - '27017'
 
-  redis-7:
-    image: uselagoon/redis-7:latest
+  redis-8:
+    image: uselagoon/redis-8:latest
     labels:
       lagoon.type: redis
     ports:
       - '6379'
-
-  solr-8:
-    image: uselagoon/solr-8:latest
-    labels:
-      lagoon.type: solr
-      lagoon.persistent.size: 100Mi
-    ports:
-     - "8983"
-    volumes:
-      - solr-8-data:/var/solr
-    command:
-      - solr-precreate
-      - mycore
 
   solr-9:
     image: uselagoon/solr-9:latest
@@ -127,14 +113,14 @@ services:
       - solr-precreate
       - mycore
 
-  valkey-8:
-    image: uselagoon/valkey-8:latest
+  valkey-9:
+    image: uselagoon/valkey-9:latest
     labels:
       lagoon.type: valkey-persistent
       lagoon.persistent.size: 100Mi
     ports:
       - '6379'
     volumes:
-      - valkey-8-data:/data
+      - valkey-9-data:/data
     environment:
       - VALKEY_FLAVOR=persistent
