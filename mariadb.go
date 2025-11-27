@@ -3,12 +3,13 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	_ "github.com/go-sql-driver/mysql"
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 )
 
 var (
@@ -28,7 +29,7 @@ func mariadbHandler(w http.ResponseWriter, r *http.Request) {
 	mariadbConnectionStr = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mariadbUser, mariadbPassword, mariadbHost, mariadbPort, mariadbDatabase)
 	log.Print(fmt.Sprintf("Using %s as the connstring", mariadbConnectionStr))
 
-	fmt.Fprintf(w, dbConnectorPairs(mariadbConnector(mariadbConnectionStr), mariadbVersion))
+	fmt.Fprintf(w, "%s", dbConnectorPairs(mariadbConnector(mariadbConnectionStr), mariadbVersion))
 }
 
 func mariadbConnector(connectionString string) map[string]string {

@@ -48,7 +48,7 @@ func handler(m *mux.Router) http.HandlerFunc {
 func handleReq(w http.ResponseWriter, r *http.Request) {
 	var funcToCall []funcType
 	for _, conFunc := range funcToCall {
-		fmt.Fprintf(w, dbConnectorPairs(conFunc(), ""))
+		fmt.Fprintf(w, "%s", dbConnectorPairs(conFunc(), ""))
 	}
 }
 

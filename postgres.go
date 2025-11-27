@@ -3,11 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 
 	_ "github.com/lib/pq"
 )
@@ -30,7 +31,7 @@ func postgresHandler(w http.ResponseWriter, r *http.Request) {
 	postgresConnectionStr = fmt.Sprintf("user=%s password=%s dbname=%s sslmode=%s host=%s port=%s", postgresUser, postgresPassword, postgresDatabase, postgresSSL, postgresHost, postgresPort)
 	log.Print(fmt.Sprintf("Using %s as the connstring", postgresConnectionStr))
 
-	fmt.Fprintf(w, dbConnectorPairs(postgresDBConnector(postgresConnectionStr), postgresVersion))
+	fmt.Fprintf(w, "%s", dbConnectorPairs(postgresDBConnector(postgresConnectionStr), postgresVersion))
 }
 
 func postgresDBConnector(connectionString string) map[string]string {

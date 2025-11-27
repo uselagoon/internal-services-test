@@ -20,7 +20,7 @@ func redisHandler(w http.ResponseWriter, r *http.Request) {
 	redisRoute := strings.ReplaceAll(service, "/", "")
 	redisConnectionStr := fmt.Sprintf("%s:6379", redisRoute)
 	log.Print(fmt.Sprintf("Using %s as the connstring", redisConnectionStr))
-	fmt.Fprintf(w, redisConnector(redisConnectionStr, redisRoute))
+	fmt.Fprintf(w, "%s", redisConnector(redisConnectionStr, redisRoute))
 }
 
 func cleanRedisOutput(r *redis.StringCmd) string {

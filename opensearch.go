@@ -24,7 +24,7 @@ func opensearchHandler(w http.ResponseWriter, r *http.Request) {
 	opensearchHost = service
 	opensearchConnectionStr := fmt.Sprintf("http://%s:9200", opensearchHost)
 
-	fmt.Fprintf(w, opensearchConnector(opensearchConnectionStr))
+	fmt.Fprintf(w, "%s", opensearchConnector(opensearchConnectionStr))
 }
 
 func cleanOpensearchOutput(sr *opensearchapi.SearchResp) string {

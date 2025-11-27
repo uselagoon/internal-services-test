@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+
+	machineryEnvVars "github.com/uselagoon/machinery/utils/variables"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -40,7 +41,7 @@ func mongoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Print(fmt.Sprintf("Using %s as the connstring", mongoConnectionStr))
 
-	fmt.Fprintf(w, mongoConnector(mongoConnectionStr, database))
+	fmt.Fprintf(w, "%s", mongoConnector(mongoConnectionStr, database))
 }
 
 func cleanMongoOutput(docs []bson.M) string {
