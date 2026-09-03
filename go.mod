@@ -1,6 +1,6 @@
 module internal-services-test
 
-go 1.25
+go 1.25.0
 
 require (
 	github.com/go-sql-driver/mysql v1.9.3
@@ -8,7 +8,7 @@ require (
 	github.com/lib/pq v1.12.3
 	github.com/opensearch-project/opensearch-go/v4 v4.6.0
 	github.com/redis/go-redis/v9 v9.21.0
-	github.com/uselagoon/machinery v0.0.37
+	github.com/uselagoon/machinery v0.0.38
 	github.com/vanng822/go-solr v0.10.0
 	go.mongodb.org/mongo-driver/v2 v2.2.3
 )
@@ -23,7 +23,7 @@ require (
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	golang.org/x/crypto v0.47.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/crypto v0.55.0 // indirect
+	golang.org/x/sync v0.22.0 // indirect
+	golang.org/x/text v0.41.0 // indirect
 )
